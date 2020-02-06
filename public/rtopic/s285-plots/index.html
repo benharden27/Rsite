@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.55.6" />
+
+
+<title>S285 Plots - Visualization in R</title>
+<meta property="og:title" content="S285 Plots - Visualization in R">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://classroom.google.com/">Classroom</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    <h1 class="article-title">S285 Plots</h1>
+
+    <div class="article-content">
+      
+
+
+<div id="initial-data-work" class="section level1">
+<h1>Initial data work</h1>
+<pre class="r"><code># load in the libraries we will use
+library(oce)
+library(S285)
+library(tidyverse)
+
+# setting all negative longitudes to +360
+S285$elg$lon[S285$elg$lon&lt;0] &lt;- S285$elg$lon[S285$elg$lon&lt;0] + 360
+
+# setting all salinities less than 30 to NA
+S285$elg$sal[S285$elg$sal&lt;30] &lt;- NA
+
+# setting plotting parameters
+lonlim &lt;- c(169,210)
+latlim &lt;- c(-48,-15)
+
+# making lon labels
+lonbreaks &lt;- pretty(lonlim)
+lonlab &lt;- lonbreaks
+lonlab[lonlab&gt;180] &lt;- lonlab[lonlab&gt;180] - 360
+lonlab &lt;- paste0(abs(lonlab), &quot;°&quot;, ifelse(lonlab &lt; 0,&quot;W&quot;,&quot;E&quot;))
+
+# making lat labels
+latbreaks &lt;- pretty(latlim)
+latlab &lt;- paste0(abs(latbreaks), &quot;°&quot;, ifelse(latbreaks &lt; 0,&quot;S&quot;,&quot;N&quot;))
+
+# creating function to format plot aesthetics
+set_aesthetics &lt;- function() {
+  g &lt;- theme_classic() +
+    theme(panel.grid = element_blank(),
+    strip.background = element_blank(),
+    strip.placement = &quot;outside&quot;,
+    axis.line =  element_line(size = .2),
+    axis.ticks = element_line(size = .2))
+  
+  return(g)
+}</code></pre>
+</div>
+<div id="cruise-track" class="section level1">
+<h1>Cruise Track</h1>
+<pre class="r"><code>ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long,lat,group=group),data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  geom_path() +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()</code></pre>
+<p><img src="/post/cruise_plots_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="surface-maps" class="section level1">
+<h1>Surface Maps</h1>
+<div id="temperature" class="section level2">
+<h2>Temperature</h2>
+<pre class="r"><code>ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  geom_point(aes(color = temp)) +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  scale_color_gradientn(colors = oce::oceColorsTemperature(100)) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()</code></pre>
+<p><img src="/post/cruise_plots_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="salinity" class="section level2">
+<h2>Salinity</h2>
+<pre class="r"><code>ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  geom_point(aes(color = sal)) +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  scale_color_gradientn(colors = oce::oceColorsSalinity(100),
+                        limits = c(34,36)) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()</code></pre>
+<p><img src="/post/cruise_plots_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="fluoroesence" class="section level2">
+<h2>Fluoroesence</h2>
+<pre class="r"><code>ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  geom_point(aes(color = fluor)) +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  scale_color_gradientn(colors = oce::oceColorsChlorophyll(100),
+                        limits = c(0,75)) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()</code></pre>
+<p><img src="/post/cruise_plots_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
+<div id="cross-sections" class="section level1">
+<h1>Cross Sections</h1>
+<div id="temperature-1" class="section level2">
+<h2>Temperature</h2>
+<pre class="r"><code>ctd &lt;- sea::prep_section_ctd(S285$ctd)
+sea::plot_section(ctd, zlim = c(0,1000))</code></pre>
+<p><img src="/post/cruise_plots_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="salinity-1" class="section level2">
+<h2>Salinity</h2>
+<pre class="r"><code>ctd &lt;- sea::prep_section_ctd(S285$ctd, var = &quot;salinity&quot;)
+sea::plot_section(ctd, colormap = oce::oce.colorsSalinity(), zlim = c(0,1000))</code></pre>
+<p><img src="/post/cruise_plots_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

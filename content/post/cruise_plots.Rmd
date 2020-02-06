@@ -1,0 +1,124 @@
+---
+title: "S285 Plots"
+weight: 6
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE, message = FALSE, show = FALSE, error = FALSE, warning = FALSE)
+```
+
+# Initial data work
+
+```{r}
+# load in the libraries we will use
+library(oce)
+library(S285)
+library(tidyverse)
+
+# setting all negative longitudes to +360
+S285$elg$lon[S285$elg$lon<0] <- S285$elg$lon[S285$elg$lon<0] + 360
+
+# setting all salinities less than 30 to NA
+S285$elg$sal[S285$elg$sal<30] <- NA
+
+# setting plotting parameters
+lonlim <- c(169,210)
+latlim <- c(-48,-15)
+
+# making lon labels
+lonbreaks <- pretty(lonlim)
+lonlab <- lonbreaks
+lonlab[lonlab>180] <- lonlab[lonlab>180] - 360
+lonlab <- paste0(abs(lonlab), "°", ifelse(lonlab < 0,"W","E"))
+
+# making lat labels
+latbreaks <- pretty(latlim)
+latlab <- paste0(abs(latbreaks), "°", ifelse(latbreaks < 0,"S","N"))
+
+# creating function to format plot aesthetics
+set_aesthetics <- function() {
+  g <- theme_classic() +
+    theme(panel.grid = element_blank(),
+    strip.background = element_blank(),
+    strip.placement = "outside",
+    axis.line =  element_line(size = .2),
+    axis.ticks = element_line(size = .2))
+  
+  return(g)
+}
+```
+
+# Cruise Track
+
+```{r}
+ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long,lat,group=group),data = map_data("world2"), fill = "grey50") +
+  geom_path() +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()
+```
+
+# Surface Maps
+
+## Temperature
+
+```{r}
+ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data("world2"), fill = "grey50") +
+  geom_point(aes(color = temp)) +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  scale_color_gradientn(colors = oce::oceColorsTemperature(100)) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()
+```
+
+## Salinity
+
+```{r}
+ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data("world2"), fill = "grey50") +
+  geom_point(aes(color = sal)) +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  scale_color_gradientn(colors = oce::oceColorsSalinity(100),
+                        limits = c(34,36)) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()
+```
+
+## Fluoroesence
+
+```{r}
+ggplot(S285$elg, aes(lon,lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data("world2"), fill = "grey50") +
+  geom_point(aes(color = fluor)) +
+  coord_quickmap(xlim = lonlim, ylim = latlim) +
+  scale_x_continuous(breaks = lonbreaks, labels = lonlab) +
+  scale_y_continuous(breaks = latbreaks, labels = latlab) +
+  scale_color_gradientn(colors = oce::oceColorsChlorophyll(100),
+                        limits = c(0,75)) +
+  labs(x = NULL, y = NULL) +
+  set_aesthetics()
+```
+
+# Cross Sections
+
+## Temperature
+
+```{r}
+ctd <- sea::prep_section_ctd(S285$ctd)
+sea::plot_section(ctd, zlim = c(0,1000))
+```
+
+## Salinity
+
+```{r}
+ctd <- sea::prep_section_ctd(S285$ctd, var = "salinity")
+sea::plot_section(ctd, colormap = oce::oce.colorsSalinity(), zlim = c(0,1000))
+```

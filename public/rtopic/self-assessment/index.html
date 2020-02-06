@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.55.6" />
+
+
+<title>Self Assessment - Visualization in R</title>
+<meta property="og:title" content="Self Assessment - Visualization in R">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://classroom.google.com/">Classroom</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    <h1 class="article-title">Self Assessment</h1>
+
+    <div class="article-content">
+      
+
+
+<div id="instructions" class="section level1">
+<h1>Instructions</h1>
+<p>The following is a self-assessment of your current level of skills in R. Please create a new script to complete the following exercises. If you are new to R, you will likely only get to somewhere in Task 1. Otherwise, go on as far as you can. Let Ben know when you’ve gone as far as you can so he can check you off. This is not a test, just data gathering.</p>
+</div>
+<div id="task-1-vectors" class="section level1">
+<h1>Task 1: Vectors</h1>
+<ul>
+<li>Assign the number <code>1, 18, 4, 32, 23, 41, 39, 5</code> to a vector call <code>my_nums</code>.</li>
+<li>Find the total sum of <code>my_nums</code>.</li>
+<li>create a new vector call <code>my_nums2</code> which is <code>my_nums</code> multiplied by <code>2</code>.</li>
+<li>create another new vector called <code>my_nums3</code> which is <code>my_nums</code> added to <code>my_nums2</code>.</li>
+<li>Use indexing to extract the third value in <code>my_nums3</code></li>
+<li>Find which of the values in <code>my_num3</code> are greater than <code>100</code>.</li>
+</ul>
+</div>
+<div id="task-2-data-frames" class="section level1">
+<h1>Task 2: Data Frames</h1>
+<ul>
+<li>Load the <code>tidyverse</code> library</li>
+<li>Use the built in dataset <code>mpg</code> for the following [NB: mpg contains cars, their engine sizes (<code>displ</code>) and other parameters. See help(mpg) for more details.]:
+<ul>
+<li>Print the first few rows of the dataset out in the console.</li>
+<li>Extract just the column <code>displ</code> using both named indexing and by column number</li>
+<li>Find the mean of column <code>displ</code></li>
+<li>Find all the values of <code>displ</code> which are greater than <code>3</code>.</li>
+<li>Sort the data frame by increasing <code>displ</code>.</li>
+</ul></li>
+</ul>
+<div id="task-3-ggplot" class="section level2">
+<h2>Task 3: ggplot</h2>
+<ul>
+<li>load the <code>tidyverse</code> library.</li>
+<li>Use the dataset <code>msleep</code> and <code>ggplot</code> for the following tasks [NB: <code>msleep</code> is a mammal sleep data set. See <code>?msleep</code> for more details]:
+<ul>
+<li>plot <code>sleep_total</code> verses <code>sleep_rem</code> as a series of points (scatter graph)</li>
+<li>add a smoothing line</li>
+<li>color the point and smoothing lines by <code>vore</code>.</li>
+<li>facet the plot by <code>vore</code></li>
+<li>apply the <code>bw</code> theme</li>
+</ul></li>
+</ul>
+</div>
+<div id="task-4-maps" class="section level2">
+<h2>Task 4: Maps</h2>
+<ul>
+<li>use the USA map data in <code>map_data("usa")</code> for this task:
+<ul>
+<li>plot the <code>long</code> and <code>lat</code> values as a polygon in ggplot</li>
+<li>correctly proportion the x and y axis to be map-like</li>
+<li>change the default color of the fill and border of the polygon</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+    
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,150 @@
+---
+title: Climate Data
+weight: 5
+---
+
+
+
+<p><link rel="stylesheet" href="styles.css" type="text/css"></p>
+<p></br></p>
+<div id="climate-data" class="section level1">
+<h1>Climate Data</h1>
+<p>Below are links to some preformatted data set related to the presentations you gave last Friday about our changing climate. I have taken the raw data files and made them neat for plotting. If you feel confident with the plotting you should try and work up the data from the raw version.</p>
+<p>Your job today is to pick a data set, load it in, and explore the data and ways you might be able to plot it that would make sense. Think about what we’ve covered so far in terms of creating geoms, formatting plots and playing around with presentation.</p>
+<p>In the next few days, you will build the context around these plots and create a presentation of the data and it’s context.</p>
+</div>
+<div id="note-on-wrangling" class="section level1">
+<h1>Note on wrangling</h1>
+<p>If you feel like you would enjoy the challenge of working up the data from the raw data provided on the websites of any of the data sets, you should refer to the <a href="https://r4ds.had.co.nz/wrangle-intro.html">Wrangle Chapter</a> or R for Data Science, especially the <a href="https://r4ds.had.co.nz/data-import.html">Data Import</a> and <a href="https://r4ds.had.co.nz/tidy-data.html">Tidy data</a> chapters. There’s a whole slew of tools you will need to massage the data into a nice format, but some of the key things will be:</p>
+<ul>
+<li>Using the <code>read_csv()</code>, <code>read_tsv()</code>, or <code>read_delim()</code> functions and looking at the additional arguments that can be passed to these</li>
+<li>Potentially forcing a column to a numeric using <code>as.numeric()</code></li>
+<li>Using <code>mutate()</code> to create new columns in your data frame (potentially from existing data in the frame)</li>
+<li>The <code>lubridate</code> package creates data-time formats from a variety of inputs (see <a href="https://r4ds.had.co.nz/dates-and-times.html">Lubridate</a> chapter in R for Data Science)</li>
+<li>’gather()` function can take data spread over multiple columns and bring it into one place. This is especially useful if your data is organized with year on the row names and months in the columns.</li>
+<li><code>readxl</code> package has a <code>read_excel()</code> function for reading in Excel datasheets</li>
+</ul>
+</div>
+<div id="atmospheric-co2" class="section level1">
+<h1>Atmospheric CO2</h1>
+<p>I got the Mauna loa data set from the <a href="http://scrippsco2.ucsd.edu/data/atmospheric_co2/">Keeling group page</a>, but you can also get it from <a href="https://www.esrl.noaa.gov/gmd/ccgg/trends/data.html">NOAA</a>. The Keeling group page also has data sets from other stations, but note that this data would need to be wrangled into the right format for plotting.</p>
+<ul>
+<li><a href="/data_raw/climate/CO2_mauna_loa.csv">Mauna Loa CO2 record</a></li>
+<li><a href="/data_raw/climate/CO2_bering_head.csv">Bering Head CO2 record</a></li>
+</ul>
+<p>The raw data for these two records but as I said, there are others accessible from the Keeling page</p>
+<ul>
+<li><a href="/data_raw/climate_raw/monthly_in_situ_co2_mlo.csv">Mauna Loa raw</a></li>
+<li><a href="/data_raw/climate_raw/monthly_flask_co2_nzd.csv">Bering Head raw</a></li>
+</ul>
+<blockquote>
+<p>How is it best to plot Atmospheric CO2 changes?</p>
+</blockquote>
+<blockquote>
+<p>Can you plot multiple records on the same plot?</p>
+</blockquote>
+<blockquote>
+<p>Can you add this data onto the CO2 record from paleo?</p>
+</blockquote>
+</div>
+<div id="sea-ice" class="section level1">
+<h1>Sea Ice</h1>
+<p>Data is from <a href="https://nsidc.org/arcticseaicenews/sea-ice-tools/">NSIDC</a> in excel format.</p>
+<ul>
+<li><a href="/data_raw/climate/sea_ice_extent.csv">Sea ice record</a></li>
+</ul>
+<p>And available in raw form</p>
+<ul>
+<li><a href="/data_raw/climate_raw/Sea_Ice_Index_Daily_Extent_G02135_v3.0.xlsx">Sea ice record</a></li>
+</ul>
+<blockquote>
+<p>How best to show such a seasonally varying signal and the changes?</p>
+</blockquote>
+<blockquote>
+<p>Can you plot the trend lines for different seasons?</p>
+</blockquote>
+<blockquote>
+<p>How can you measure the magnitude of the changes?</p>
+</blockquote>
+</div>
+<div id="paleo-records" class="section level1">
+<h1>Paleo Records</h1>
+<p>Data is from Antarctic ice cores and can be accessed via <a href="https://cdiac.ess-dive.lbl.gov/trends/co2/ice_core_co2.html">CDIAC</a> which will take you to the <a href="https://www.ncdc.noaa.gov/data-access/paleoclimatology-data/datasets/ice-core">NOAA Ice Core data site</a></p>
+<blockquote>
+<p>Can you combine the records below and show how they co-vary?</p>
+</blockquote>
+<blockquote>
+<p>Can you add them to the modern record?</p>
+</blockquote>
+<blockquote>
+<p>How best to indicate and explain the patterns you see?</p>
+</blockquote>
+<div id="carbon-dioxide" class="section level2">
+<h2>Carbon Dioxide</h2>
+<p>CO2 data recovered from this (data page)[<a href="https://www.ncdc.noaa.gov/paleo-search/study/6091" class="uri">https://www.ncdc.noaa.gov/paleo-search/study/6091</a>]. Data is a combination of records from a few cores - raw data file and site have all relavent metadata.</p>
+<ul>
+<li><a href="/data_raw/climate/paleo_co2.csv">Paleo CO2 record</a></li>
+</ul>
+<p>And the raw data</p>
+<ul>
+<li><a href="/data_raw/climate_raw/edc-co2-2008.txt">Paleo CO2 raw</a></li>
+</ul>
+</div>
+<div id="temperature" class="section level2">
+<h2>Temperature</h2>
+<p>Temperature data found <a href="https://www.ncdc.noaa.gov/paleo-search/study/6080">here</a>. Temperature value is relative to the average over the past 1000 years.</p>
+<ul>
+<li><a href="/data_raw/climate/paleo_temp.csv">Paleo Temp Record</a></li>
+</ul>
+<p>And in the raw:</p>
+<ul>
+<li><a href="/data_raw/climate_raw/edc3deuttemp2007.txt">Paleo Temp Raw</a></li>
+</ul>
+</div>
+</div>
+<div id="surface-temperature" class="section level1">
+<h1>Surface Temperature</h1>
+<p>Data is temperature anomalies compiled by NASA and available on their <a href="https://data.giss.nasa.gov/gistemp/">website</a>. Also some good <a href="https://data.giss.nasa.gov/gistemp/faq/abs_temp.html">FAQs</a> about how this is calculated. These anomalies are calculated relative to the baseline period 1951 – 1980.</p>
+<ul>
+<li><a href="/data_raw/climate/nasa_surftemp.csv">Air surface temperature anomaly</a></li>
+</ul>
+<p>And the raw data is:</p>
+<ul>
+<li><a href="/data_raw/climate_raw/surftemp_NASA.csv">Air surface temp raw</a></li>
+</ul>
+<blockquote>
+<p>What do we understand by “temperature anomaly”?</p>
+</blockquote>
+<blockquote>
+<p>Can you join this record up with the paleo record?</p>
+</blockquote>
+<blockquote>
+<p>How best to indicate the baseline period?</p>
+</blockquote>
+</div>
+<div id="ocean-acidification" class="section level1">
+<h1>Ocean Acidification</h1>
+<p>pH and carbonate chem data can be accessed from either the <a href="http://bats.bios.edu/bats-data/">BATS data site</a> or the <a href="http://hahana.soest.hawaii.edu/hot/hot-dogs/interface.html">HOTS data site</a> for data in the Atlantic and Pacific respectively.</p>
+<p>A good raw data version of the surface carbonate chemistry in the Pacific can be found <a href="http://hahana.soest.hawaii.edu/hot/products/products.html">here</a></p>
+<p>And cleaned here:</p>
+<ul>
+<li><a href="/data_raw/climate/surface_co2.csv">Surface Carb Chem HOTS</a></li>
+</ul>
+<p>And here is the raw file</p>
+<ul>
+<li><a href="/data_raw/climate_raw/HOT_surface_CO2.txt">Surface Carb Chem raw</a></li>
+</ul>
+<blockquote>
+<p>What is the trend in pH?</p>
+</blockquote>
+<blockquote>
+<p>How do we make sense of all the variables we can plot?</p>
+</blockquote>
+<blockquote>
+<p>Can we incorporate the Mauna Loa data into our plots?</p>
+</blockquote>
+</div>
+<div id="sea-level-rise" class="section level1">
+<h1>Sea Level Rise</h1>
+<p>Haven’t got round to processing to a neat data format, but the raw data for the globe and for various regions can be found on the <a href="https://www.star.nesdis.noaa.gov/sod/lsa/SeaLevelRise/LSA_SLR_timeseries.php">NOAA Satallite Altimetry Page</a></p>
+</div>

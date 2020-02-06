@@ -1,0 +1,134 @@
+---
+title: "Previous Cruise Data"
+weight: 7
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(tidyverse)
+```
+
+# Previous Cruise Data
+
+I have compiled the (albeit not fully quality controlled) data from past four trips along our cruise track into a package which you can download and load into your R session. The data is on [my github page](https://github.com/benharden27) in a package called [`seapacific`](https://github.com/benharden27/seapacific). To download this data you need to install the development tools package called `devtools`
+
+```{r, eval = FALSE}
+install.packages("devtools")
+```
+
+You can then install the `seapacific` on your computer by running
+
+```{r, eval = FALSE}
+devtools::install_github("benharden27/seapacific")
+```
+
+If I make any updates or improvements to the data, I'll let you know and you can run the above command again to refresh your local install.
+
+You can then load the package into your session like any other package
+
+```{r}
+library(seapacific)
+```
+
+This package doesn't contain any functions, just four data sets from the four previous cruises along our cruise track: S258, S265, S272 and S278. Each cruise data set contains a number of subsets based on how the data was collected.
+
+```{r}
+summary(S278)
+```
+
+This gives the names of these subsets of data. I'll go through each in turn. You can access each by sing the `$` after the cruise name - see examples below.
+
+## elg
+
+This is the high-res surface data from flowthrough. I am yet to extract this for each of these cruises as SEA has a way of hiding them deep in our archive. Will do so at some point, but it's not too big of an issue because we have the hourly data set.
+
+## hourly
+
+This is the hourly data from the surface flowthrough system including surface temperature, salinity, fluorescence, wind speed/direction, and depth (if CHIRP was working well)... Most fields are self-explanatory. `1min` and `60min` refer to the length of averaging for that value. `dttm` is you date-time field.
+
+```{r}
+summary(S278$hourly)
+```
+
+## surfsamp
+
+Surface samples taken with a bucket for chemical analysis. All cruises will have different combinations based on sampling priorities, but this could include: Nitrate, phosphate, chl-a, pH, Alk, etc. and any values recorded by the flowthrough at the same time such as temp, sal, etc.
+
+```{r}
+summary(S278$surfsamp)
+```
+
+## neuston
+
+Data from the neuston net data sheet. Includes local of tow, amount of biomass caught, length of tow, biodiversity, plastic pieces, etc. Lots of fields in here - happy to talk in more detail as needed. `biodens` is what you are most likely to need. Not included are the 100-count data - I can help you access this as needed.
+
+```{r}
+names(S278$neuston)
+```
+
+## hydro
+
+Similar to `surfsamp` but for values extracted from the niskin bottles closed below the surface.
+
+```{r}
+summary(S278$hydro)
+```
+
+## ctd
+
+Each of the above have been data frames as we have previously encountered them -- data tables like you would be familiar with in excel. The CTD data is a little more complicated. Each cast doesn't just have one date point for every field, but multiple values over the depth of the cast. We organize this data therefore as a list of CTD objects as read in by the `oce` package, which is all about oceanography in R. I'd recommend everyone having this package anyway as it has some cool functions you might want to use later.
+
+```{r, eval = FALSE}
+install.packages("oce")
+```
+
+```{r, messages = FALSE}
+library(oce)
+```
+
+You can access any of the CTD casts in the data file using the `[[]]` notation. For example:
+
+```{r}
+S278$ctd[[1]]
+```
+
+To extract a field from the ctd cast, you can use either of the following
+
+```{r, eval = FALSE}
+S278$ctd[[1]]@data$temperature
+```
+```{r}
+S278$ctd[[1]][["temperature"]]
+```
+
+So wrangling this data to ggplot is not going to be straight-forward and will need some thought depending on what your goals are. If you wanted to plot a single profile, your code might look like this
+
+```{r}
+library(tidyverse)
+df <- tibble(depth = S278$ctd[[1]][["depth"]],
+             temp = S278$ctd[[1]][["temperature"]],
+             sal = S278$ctd[[1]][["salinity"]])
+ggplot(df, aes(temp,depth)) +
+  geom_path() +
+  scale_y_reverse()
+```
+
+or faceting and making it look nice:
+
+```{r}
+df2 <- gather(df,key = "key", value = "value", sal, temp)
+ggplot(df2,aes(value, depth)) +
+  geom_path() +
+  facet_wrap(~key, scales = "free_x", strip.position = "bottom", 
+                labeller = as_labeller(c(temp = "Temperature", sal = "Salinity"))) +
+  scale_y_reverse() +
+  labs(x = NULL) +
+  theme_bw() +
+  theme(strip.background = element_blank(), strip.placement = "outside")
+```
+
+
+## adcp
+
+This data is organized as matrices of u (east-west) and v (north-south) component of the velocity at depth in the ocean. It is perhaps the least clean of all the data in our records and Ben can help you work through this as needed.

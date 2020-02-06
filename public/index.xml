@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Visualization in R</title>
+    <link>/</link>
+    <description>Recent content on Visualization in R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Getting Started</title>
+      <link>/rtopic/getting-started/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/getting-started/</guid>
+      <description>Getting Started in R Why R? Perhaps the best place to start is to ask ourselves why we are choosing to use R. Fortunately, Rob Schlegel (WHOI) sums up nicely why using R is a good idea for data science as part of his R workshop:
+https://robwschlegel.github.io/Intro_R_Workshop/prelim.html#why-use-r
+Dan Kelley (Dalhousie) has a nice book on oceanographic analysis in R (in classroom) - his sub-chapter on “Why R, and Why Now?</description>
+    </item>
+    
+    <item>
+      <title>Self Assessment</title>
+      <link>/rtopic/self-assessment/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/self-assessment/</guid>
+      <description>Instructions The following is a self-assessment of your current level of skills in R. Please create a new script to complete the following exercises. If you are new to R, you will likely only get to somewhere in Task 1. Otherwise, go on as far as you can. Let Ben know when you’ve gone as far as you can so he can check you off. This is not a test, just data gathering.</description>
+    </item>
+    
+    <item>
+      <title>Initial Plotting</title>
+      <link>/rtopic/initial-plotting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/initial-plotting/</guid>
+      <description>Introduction to Plotting in ggplot Data for this exercise can be found here.
+In this class, we will begin plotting data using ggplot. ggplot is a powerful tool for producing elegant graphics and is relatively simple to use once you’ve mastered a few key ideas. We’re going to be using this tool to experiment with visualizing data from a SEA Semester cruise across the South Pacific undertaken in 2014 (S258).</description>
+    </item>
+    
+    <item>
+      <title>Additional Plotting Tools</title>
+      <link>/rtopic/additional-plotting-tools/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/additional-plotting-tools/</guid>
+      <description>Data for this exercise can be found here.
+In this class, we will continue to practice plotting data using ggplot and extend what we know to include how we format our plots to look nice for publication. We will be plotting data from a previous SEA cruise (S258)
+Prerequisites Before this class, you should have worked through chapter 28 of R for Data Science by Garrett Grolemund and Hadley Wickham.</description>
+    </item>
+    
+    <item>
+      <title>Climate Data</title>
+      <link>/rtopic/climate-data/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/climate-data/</guid>
+      <description>Climate Data Below are links to some preformatted data set related to the presentations you gave last Friday about our changing climate. I have taken the raw data files and made them neat for plotting. If you feel confident with the plotting you should try and work up the data from the raw version.
+Your job today is to pick a data set, load it in, and explore the data and ways you might be able to plot it that would make sense.</description>
+    </item>
+    
+    <item>
+      <title>S285 Plots</title>
+      <link>/rtopic/s285-plots/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/s285-plots/</guid>
+      <description>Initial data work # load in the libraries we will use library(oce) library(S285) library(tidyverse) # setting all negative longitudes to +360 S285$elg$lon[S285$elg$lon&amp;lt;0] &amp;lt;- S285$elg$lon[S285$elg$lon&amp;lt;0] + 360 # setting all salinities less than 30 to NA S285$elg$sal[S285$elg$sal&amp;lt;30] &amp;lt;- NA # setting plotting parameters lonlim &amp;lt;- c(169,210) latlim &amp;lt;- c(-48,-15) # making lon labels lonbreaks &amp;lt;- pretty(lonlim) lonlab &amp;lt;- lonbreaks lonlab[lonlab&amp;gt;180] &amp;lt;- lonlab[lonlab&amp;gt;180] - 360 lonlab &amp;lt;- paste0(abs(lonlab), &amp;quot;°&amp;quot;, ifelse(lonlab &amp;lt; 0,&amp;quot;W&amp;quot;,&amp;quot;E&amp;quot;)) # making lat labels latbreaks &amp;lt;- pretty(latlim) latlab &amp;lt;- paste0(abs(latbreaks), &amp;quot;°&amp;quot;, ifelse(latbreaks &amp;lt; 0,&amp;quot;S&amp;quot;,&amp;quot;N&amp;quot;)) # creating function to format plot aesthetics set_aesthetics &amp;lt;- function() { g &amp;lt;- theme_classic() + theme(panel.</description>
+    </item>
+    
+    <item>
+      <title>Previous Cruise Data</title>
+      <link>/rtopic/previous-cruise-data/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/previous-cruise-data/</guid>
+      <description>Previous Cruise Data I have compiled the (albeit not fully quality controlled) data from past four trips along our cruise track into a package which you can download and load into your R session. The data is on my github page in a package called seapacific. To download this data you need to install the development tools package called devtools
+install.packages(&amp;quot;devtools&amp;quot;) You can then install the seapacific on your computer by running</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
+      
+      <guid>/about/</guid>
+      <description>This is a &amp;ldquo;hello world&amp;rdquo; example website for the blogdown package. The theme was forked from @jrutheiser/hugo-lithium-theme and modified by Yihui Xie.</description>
+    </item>
+    
+  </channel>
+</rss>

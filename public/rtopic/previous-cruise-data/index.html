@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.55.6" />
+
+
+<title>Previous Cruise Data - Visualization in R</title>
+<meta property="og:title" content="Previous Cruise Data - Visualization in R">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://classroom.google.com/">Classroom</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    <h1 class="article-title">Previous Cruise Data</h1>
+
+    <div class="article-content">
+      
+
+
+<div id="previous-cruise-data" class="section level1">
+<h1>Previous Cruise Data</h1>
+<p>I have compiled the (albeit not fully quality controlled) data from past four trips along our cruise track into a package which you can download and load into your R session. The data is on <a href="https://github.com/benharden27">my github page</a> in a package called <a href="https://github.com/benharden27/seapacific"><code>seapacific</code></a>. To download this data you need to install the development tools package called <code>devtools</code></p>
+<pre class="r"><code>install.packages(&quot;devtools&quot;)</code></pre>
+<p>You can then install the <code>seapacific</code> on your computer by running</p>
+<pre class="r"><code>devtools::install_github(&quot;benharden27/seapacific&quot;)</code></pre>
+<p>If I make any updates or improvements to the data, I’ll let you know and you can run the above command again to refresh your local install.</p>
+<p>You can then load the package into your session like any other package</p>
+<pre class="r"><code>library(seapacific)</code></pre>
+<p>This package doesn’t contain any functions, just four data sets from the four previous cruises along our cruise track: S258, S265, S272 and S278. Each cruise data set contains a number of subsets based on how the data was collected.</p>
+<pre class="r"><code>summary(S278)</code></pre>
+<pre><code>##          Length Class  Mode
+## elg      46     tbl_df list
+## hourly   14     tbl_df list
+## surfsamp 25     tbl_df list
+## neuston  78     tbl_df list
+## hydro    27     tbl_df list
+## adcp     14     -none- list
+## ctd      22     -none- list
+## ctd2     12     tbl_df list</code></pre>
+<p>This gives the names of these subsets of data. I’ll go through each in turn. You can access each by sing the <code>$</code> after the cruise name - see examples below.</p>
+<div id="elg" class="section level2">
+<h2>elg</h2>
+<p>This is the high-res surface data from flowthrough. I am yet to extract this for each of these cruises as SEA has a way of hiding them deep in our archive. Will do so at some point, but it’s not too big of an issue because we have the hourly data set.</p>
+</div>
+<div id="hourly" class="section level2">
+<h2>hourly</h2>
+<p>This is the hourly data from the surface flowthrough system including surface temperature, salinity, fluorescence, wind speed/direction, and depth (if CHIRP was working well)… Most fields are self-explanatory. <code>1min</code> and <code>60min</code> refer to the length of averaging for that value. <code>dttm</code> is you date-time field.</p>
+<pre class="r"><code>summary(S278$hourly)</code></pre>
+<pre><code>##       dttm                             date                 time          
+##  Min.   :2018-03-30 23:00:00.00   Min.   :2018-03-30   Min.   :0.0000116  
+##  1st Qu.:2018-04-11 20:30:09.50   1st Qu.:2018-04-11   1st Qu.:0.2089931  
+##  Median :2018-04-20 12:00:03.00   Median :2018-04-20   Median :0.4588542  
+##  Mean   :2018-04-19 18:49:52.17   Mean   :2018-04-19   Mean   :0.4765690  
+##  3rd Qu.:2018-04-29 03:30:57.50   3rd Qu.:2018-04-29   3rd Qu.:0.7089236  
+##  Max.   :2018-05-07 19:00:53.00   Max.   :2018-05-07   Max.   :0.9589815  
+##                                                                           
+##        zd           lon              lat              temp      
+##  Min.   : NA   Min.   :-180.0   Min.   :-44.17   Min.   :14.60  
+##  1st Qu.: NA   1st Qu.:-171.2   1st Qu.:-41.78   1st Qu.:18.24  
+##  Median : NA   Median :-158.6   Median :-34.43   Median :19.49  
+##  Mean   :NaN   Mean   :-130.6   Mean   :-31.96   Mean   :21.68  
+##  3rd Qu.: NA   3rd Qu.:-151.6   3rd Qu.:-22.05   3rd Qu.:25.07  
+##  Max.   : NA   Max.   : 180.0   Max.   :-16.59   Max.   :29.39  
+##  NA&#39;s   :831                                     NA&#39;s   :122    
+##       sal            fluor         cdom_1min        xmiss_1min     
+##  Min.   :34.31   Min.   : 2.22   Min.   : 25.33   Min.   :   0.02  
+##  1st Qu.:35.07   1st Qu.: 2.72   1st Qu.: 42.87   1st Qu.: 291.64  
+##  Median :35.26   Median : 3.28   Median : 45.27   Median : 590.29  
+##  Mean   :35.24   Mean   : 6.07   Mean   : 46.37   Mean   : 765.77  
+##  3rd Qu.:35.47   3rd Qu.: 5.13   3rd Qu.: 50.72   3rd Qu.:1095.75  
+##  Max.   :36.00   Max.   :52.12   Max.   :102.40   Max.   :3132.38  
+##  NA&#39;s   :122     NA&#39;s   :122     NA&#39;s   :122      NA&#39;s   :122      
+##      depth           wind_sp         wind_dir     
+##  Min.   :   0.0   Min.   : 0.67   Min.   :  0.15  
+##  1st Qu.: 290.1   1st Qu.: 8.41   1st Qu.: 97.78  
+##  Median :4013.0   Median :13.25   Median :185.46  
+##  Mean   :3088.9   Mean   :14.26   Mean   :184.46  
+##  3rd Qu.:4991.7   3rd Qu.:18.91   3rd Qu.:260.50  
+##  Max.   :5982.6   Max.   :58.79   Max.   :359.55  
+##  NA&#39;s   :53</code></pre>
+</div>
+<div id="surfsamp" class="section level2">
+<h2>surfsamp</h2>
+<p>Surface samples taken with a bucket for chemical analysis. All cruises will have different combinations based on sampling priorities, but this could include: Nitrate, phosphate, chl-a, pH, Alk, etc. and any values recorded by the flowthrough at the same time such as temp, sal, etc.</p>
+<pre class="r"><code>summary(S278$surfsamp)</code></pre>
+<pre><code>##    station            dttm_local                       date           
+##  Length:35          Min.   :2018-04-01 23:42:00   Min.   :2018-04-01  
+##  Class :character   1st Qu.:2018-04-11 11:13:00   1st Qu.:2018-04-10  
+##  Mode  :character   Median :2018-04-19 23:32:00   Median :2018-04-19  
+##                     Mean   :2018-04-19 21:48:00   Mean   :2018-04-19  
+##                     3rd Qu.:2018-04-28 11:31:30   3rd Qu.:2018-04-27  
+##                     Max.   :2018-05-07 04:34:00   Max.   :2018-05-07  
+##                                                                       
+##       time          time_utc         zd           lon              lat        
+##  Min.   :  180   Min.   : NA   Min.   : NA   Min.   :-179.7   Min.   :-44.12  
+##  1st Qu.:43500   1st Qu.: NA   1st Qu.: NA   1st Qu.:-170.6   1st Qu.:-40.44  
+##  Median :84540   Median : NA   Median : NA   Median :-160.1   Median :-34.60  
+##  Mean   :63669   Mean   :NaN   Mean   :NaN   Mean   :-143.3   Mean   :-31.73  
+##  3rd Qu.:85320   3rd Qu.: NA   3rd Qu.: NA   3rd Qu.:-152.3   3rd Qu.:-22.47  
+##  Max.   :86340   Max.   : NA   Max.   : NA   Max.   : 178.2   Max.   :-16.92  
+##                  NA&#39;s   :35    NA&#39;s   :35                                     
+##       temp            sal            fluor             chla        
+##  Min.   :15.50   Min.   :34.40   Min.   : 2.450   Min.   :0.02676  
+##  1st Qu.:18.85   1st Qu.:35.08   1st Qu.: 2.845   1st Qu.:0.03841  
+##  Median :19.50   Median :35.28   Median : 3.360   Median :0.05711  
+##  Mean   :22.17   Mean   :35.29   Mean   : 5.788   Mean   :0.14241  
+##  3rd Qu.:26.70   3rd Qu.:35.55   3rd Qu.: 4.665   3rd Qu.:0.12479  
+##  Max.   :29.10   Max.   :35.85   Max.   :22.620   Max.   :0.61838  
+##                                                   NA&#39;s   :12       
+##     chla_vol        po4           no3                sio2           o2     
+##  Min.   :500   Min.   : NA   Min.   :-0.03338   Min.   : NA   Min.   : NA  
+##  1st Qu.:500   1st Qu.: NA   1st Qu.: 0.03654   1st Qu.: NA   1st Qu.: NA  
+##  Median :500   Median : NA   Median : 0.10524   Median : NA   Median : NA  
+##  Mean   :500   Mean   :NaN   Mean   : 0.16004   Mean   :NaN   Mean   :NaN  
+##  3rd Qu.:500   3rd Qu.: NA   3rd Qu.: 0.17365   3rd Qu.: NA   3rd Qu.: NA  
+##  Max.   :500   Max.   : NA   Max.   : 0.58952   Max.   : NA   Max.   : NA  
+##  NA&#39;s   :12    NA&#39;s   :35    NA&#39;s   :13         NA&#39;s   :35    NA&#39;s   :35   
+##        pH         pH_lab_temp       alk          m_plastics     notes          
+##  Min.   :8.030   Min.   : NA   Min.   :2.009   Min.   : NA   Length:35         
+##  1st Qu.:8.106   1st Qu.: NA   1st Qu.:2.314   1st Qu.: NA   Class :character  
+##  Median :8.142   Median : NA   Median :2.339   Median : NA   Mode  :character  
+##  Mean   :8.155   Mean   :NaN   Mean   :2.357   Mean   :NaN                     
+##  3rd Qu.:8.211   3rd Qu.: NA   3rd Qu.:2.382   3rd Qu.: NA                     
+##  Max.   :8.280   Max.   : NA   Max.   :2.662   Max.   : NA                     
+##  NA&#39;s   :1       NA&#39;s   :35    NA&#39;s   :2       NA&#39;s   :35                      
+##     chla_45           chla_120          chla_800      
+##  Min.   :0.02676   Min.   :0.02278   Min.   :0.01690  
+##  1st Qu.:0.03841   1st Qu.:0.03107   1st Qu.:0.02354  
+##  Median :0.05711   Median :0.04170   Median :0.02944  
+##  Mean   :0.14241   Mean   :0.11653   Mean   :0.08287  
+##  3rd Qu.:0.12479   3rd Qu.:0.10069   3rd Qu.:0.06850  
+##  Max.   :0.61838   Max.   :0.50697   Max.   :0.37064  
+##  NA&#39;s   :12        NA&#39;s   :12        NA&#39;s   :13</code></pre>
+</div>
+<div id="neuston" class="section level2">
+<h2>neuston</h2>
+<p>Data from the neuston net data sheet. Includes local of tow, amount of biomass caught, length of tow, biodiversity, plastic pieces, etc. Lots of fields in here - happy to talk in more detail as needed. <code>biodens</code> is what you are most likely to need. Not included are the 100-count data - I can help you access this as needed.</p>
+<pre class="r"><code>names(S278$neuston)</code></pre>
+<pre><code>##  [1] &quot;station&quot;                &quot;dttm&quot;                   &quot;tz&quot;                    
+##  [4] &quot;dttm_in&quot;                &quot;dttm_out&quot;               &quot;date&quot;                  
+##  [7] &quot;time_in&quot;                &quot;utc_in&quot;                 &quot;zd&quot;                    
+## [10] &quot;time_out&quot;               &quot;lon&quot;                    &quot;lat&quot;                   
+## [13] &quot;temp&quot;                   &quot;sal&quot;                    &quot;fluor&quot;                 
+## [16] &quot;moon_phase&quot;             &quot;moon_mode&quot;              &quot;cloud_cover&quot;           
+## [19] &quot;wind&quot;                   &quot;current&quot;                &quot;heading&quot;               
+## [22] &quot;tow_dist&quot;               &quot;biomass&quot;                &quot;biodens&quot;               
+## [25] &quot;phyl_num&quot;               &quot;phyl_vol&quot;               &quot;lept_num&quot;              
+## [28] &quot;lept_vol&quot;               &quot;myct_num&quot;               &quot;myct_vol&quot;              
+## [31] &quot;ceph_num&quot;               &quot;ceph_vol&quot;               &quot;nekt_other_num&quot;        
+## [34] &quot;nekt_other_vol&quot;         &quot;nekt_total_num&quot;         &quot;nekt_total_vol&quot;        
+## [37] &quot;nekt_info&quot;              &quot;halo_num&quot;               &quot;gelat_num&quot;             
+## [40] &quot;gelat_vol&quot;              &quot;gelat_info&quot;             &quot;sarg_ni_piece_tot&quot;     
+## [43] &quot;sarg_ni_mass_tot&quot;       &quot;sarg_ni_piece_clump&quot;    &quot;sarg_ni_mass_clump&quot;    
+## [46] &quot;sarg_ni_piece_frag&quot;     &quot;sarg_ni_mass_frag&quot;      &quot;sarg_nii_piece_tot&quot;    
+## [49] &quot;sarg_nii_mass_tot&quot;      &quot;sarg_nii_piece_clump&quot;   &quot;sarg_nii_mass_clump&quot;   
+## [52] &quot;sarg_nii_piece_frag&quot;    &quot;sarg_nii_mass_frag&quot;     &quot;sarg_nviii_piece_tot&quot;  
+## [55] &quot;sarg_nviii_mass_tot&quot;    &quot;sarg_nviii_piece_clump&quot; &quot;sarg_nviii_mass_clump&quot; 
+## [58] &quot;sarg_nviii_piece_frag&quot;  &quot;sarg_nviii_mass_frag&quot;   &quot;sarg_fiii_piece_tot&quot;   
+## [61] &quot;sarg_fiii_mass_tot&quot;     &quot;sarg_fiii_piece_clump&quot;  &quot;sarg_fiii_mass_clump&quot;  
+## [64] &quot;sarg_fiii_piece_frag&quot;   &quot;sarg_fiii_mass_frag&quot;    &quot;sarg_other_piece_tot&quot;  
+## [67] &quot;sarg_other_mass_tot&quot;    &quot;sarg_other_piece_clump&quot; &quot;sarg_other_mass_clump&quot; 
+## [70] &quot;sarg_other_piece_frag&quot;  &quot;sarg_other_mass_frag&quot;   &quot;sarg_mass_tot&quot;         
+## [73] &quot;sarg_piece_tot&quot;         &quot;plas_pieces&quot;            &quot;plas_pellets&quot;          
+## [76] &quot;plas_density&quot;           &quot;tar&quot;                    &quot;tow_desc&quot;</code></pre>
+</div>
+<div id="hydro" class="section level2">
+<h2>hydro</h2>
+<p>Similar to <code>surfsamp</code> but for values extracted from the niskin bottles closed below the surface.</p>
+<pre class="r"><code>summary(S278$hydro)</code></pre>
+<pre><code>##    station               dttm                             date           
+##  Length:264         Min.   :2018-04-01 10:24:00.00   Min.   :2018-04-01  
+##  Class :character   1st Qu.:2018-04-08 09:43:00.00   1st Qu.:2018-04-08  
+##  Mode  :character   Median :2018-04-19 21:34:30.00   Median :2018-04-19  
+##                     Mean   :2018-04-17 19:47:02.04   Mean   :2018-04-17  
+##                     3rd Qu.:2018-04-25 09:42:00.00   3rd Qu.:2018-04-25  
+##                     Max.   :2018-05-01 10:13:00.00   Max.   :2018-05-01  
+##                                                                          
+##       time             zd           lon              lat              log      
+##  Min.   :34200   Min.   : NA   Min.   :-178.0   Min.   :-43.99   Min.   :  82  
+##  1st Qu.:34920   1st Qu.: NA   1st Qu.:-165.6   1st Qu.:-41.64   1st Qu.: 611  
+##  Median :36180   Median : NA   Median :-159.1   Median :-35.17   Median :1935  
+##  Mean   :36204   Mean   :NaN   Mean   :-116.1   Mean   :-33.41   Mean   :1703  
+##  3rd Qu.:37200   3rd Qu.: NA   3rd Qu.:-154.3   3rd Qu.:-26.21   3rd Qu.:2487  
+##  Max.   :39360   Max.   : NA   Max.   : 179.4   Max.   :-17.22   Max.   :3135  
+##                  NA&#39;s   :264                    NA&#39;s   :1                      
+##    temp_surf        sal_surf       fluor_surf        bottle         
+##  Min.   :16.08   Min.   :34.62   Min.   : 2.410   Length:264        
+##  1st Qu.:18.30   1st Qu.:35.04   1st Qu.: 2.650   Class :character  
+##  Median :20.60   Median :35.26   Median : 3.240   Mode  :character  
+##  Mean   :21.45   Mean   :35.24   Mean   : 4.954                     
+##  3rd Qu.:24.20   3rd Qu.:35.55   3rd Qu.: 4.240                     
+##  Max.   :28.90   Max.   :35.72   Max.   :16.020                     
+##                                                                     
+##        z               temp             sal           density     
+##  Min.   :  0.00   Min.   : 5.973   Min.   :29.82   Min.   :21.65  
+##  1st Qu.: 29.96   1st Qu.:15.471   1st Qu.:35.02   1st Qu.:25.00  
+##  Median : 79.57   Median :18.002   Median :35.29   Median :25.47  
+##  Mean   :106.14   Mean   :17.929   Mean   :35.25   Mean   :25.38  
+##  3rd Qu.:127.20   3rd Qu.:21.191   3rd Qu.:35.61   3rd Qu.:26.01  
+##  Max.   :693.97   Max.   :28.495   Max.   :36.20   Max.   :27.12  
+##  NA&#39;s   :22       NA&#39;s   :22       NA&#39;s   :22      NA&#39;s   :22     
+##       chla              po4           no3               sio2    
+##  Min.   :0.03453   Min.   : NA   Min.   :0.00008   Min.   : NA  
+##  1st Qu.:0.03849   1st Qu.: NA   1st Qu.:0.25980   1st Qu.: NA  
+##  Median :0.06180   Median : NA   Median :1.06128   Median : NA  
+##  Mean   :0.18771   Mean   :NaN   Mean   :1.60095   Mean   :NaN  
+##  3rd Qu.:0.16741   3rd Qu.: NA   3rd Qu.:2.27226   3rd Qu.: NA  
+##  Max.   :0.67827   Max.   : NA   Max.   :8.52007   Max.   : NA  
+##  NA&#39;s   :249       NA&#39;s   :264   NA&#39;s   :191       NA&#39;s   :264  
+##     o2_sens         o2_wink          pH         pH_lab_temp       alk     
+##  Min.   :137.1   Min.   : NA   Min.   :5.892   Min.   : NA   Min.   : NA  
+##  1st Qu.:189.6   1st Qu.: NA   1st Qu.:8.057   1st Qu.: NA   1st Qu.: NA  
+##  Median :201.0   Median : NA   Median :8.114   Median : NA   Median : NA  
+##  Mean   :198.2   Mean   :NaN   Mean   :8.079   Mean   :NaN   Mean   :NaN  
+##  3rd Qu.:208.6   3rd Qu.: NA   3rd Qu.:8.168   3rd Qu.: NA   3rd Qu.: NA  
+##  Max.   :241.5   Max.   : NA   Max.   :8.510   Max.   : NA   Max.   : NA  
+##  NA&#39;s   :22      NA&#39;s   :264   NA&#39;s   :184     NA&#39;s   :264   NA&#39;s   :264  
+##    m_plastics     notes          
+##  Min.   : NA   Length:264        
+##  1st Qu.: NA   Class :character  
+##  Median : NA   Mode  :character  
+##  Mean   :NaN                     
+##  3rd Qu.: NA                     
+##  Max.   : NA                     
+##  NA&#39;s   :264</code></pre>
+</div>
+<div id="ctd" class="section level2">
+<h2>ctd</h2>
+<p>Each of the above have been data frames as we have previously encountered them – data tables like you would be familiar with in excel. The CTD data is a little more complicated. Each cast doesn’t just have one date point for every field, but multiple values over the depth of the cast. We organize this data therefore as a list of CTD objects as read in by the <code>oce</code> package, which is all about oceanography in R. I’d recommend everyone having this package anyway as it has some cool functions you might want to use later.</p>
+<pre class="r"><code>install.packages(&quot;oce&quot;)</code></pre>
+<pre class="r"><code>library(oce)</code></pre>
+<pre><code>## Loading required package: testthat</code></pre>
+<pre><code>## 
+## Attaching package: &#39;testthat&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     matches</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     is_null</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     matches</code></pre>
+<pre><code>## Loading required package: gsw</code></pre>
+<p>You can access any of the CTD casts in the data file using the <code>[[]]</code> notation. For example:</p>
+<pre class="r"><code>S278$ctd[[1]]</code></pre>
+<pre><code>## ctd object, from file &#39;~/data/SEA/south_pacific/S278/CTD/Cnv/S278-001-HC.cnv&#39;, has data as follows.
+##    depth: NA, NA, ..., 323.29, 323.95 (length 328)
+##    conductivity: NA, NA, ..., 37.346, 37.346 (length 328)
+##    temperature: NA, NA, ..., 9.4291, 9.4292 (length 328)
+##    pressure: 0, 1, ..., 326, 327 (length 328)
+##    scan: NA, NA, ..., 4201.5, 4213.1 (length 328)
+##    v0: NA, NA, ..., 0.00018641, 0.00016061 (length 328)
+##    v1: NA, NA, ..., 7.7683e-05, 7.7823e-05 (length 328)
+##    fluorescence: NA, NA, ..., 0.048872, 0.048811 (length 328)
+##    par: NA, NA, ..., 1e-12, 1e-12 (length 328)
+##    v5: NA, NA, ..., 6.3862e-05, 6.4706e-05 (length 328)
+##    oxygen: NA, NA, ..., 4.5730, 4.5746 (length 328)
+##    oxygen2: NA, NA, ..., 6.4132, 6.4132 (length 328)
+##    oxygen3: NA, NA, ..., 198.91, 198.98 (length 328)
+##    density: NA, NA, ..., 1028.2, 1028.2 (length 328)
+##    sigmaTheta: NA, NA, ..., 26.77, 26.77 (length 328)
+##    depth2: NA, NA, ..., 323.31, 324.06 (length 328)
+##    oxygen4: NA, NA, ..., 6.4132, 6.4132 (length 328)
+##    theta: NA, NA, ..., 9.3926, 9.3925 (length 328)
+##    salinity: NA, NA, ..., 34.637, 34.637 (length 328)
+##    soundSpeed: NA, NA, ..., 1492.7, 1492.7 (length 328)
+##    specificVolumeAnomaly: NA, NA, ..., 133.69, 133.69 (length 328)
+##    thermostericAnomaly: NA, NA, ..., 127.38, 127.37 (length 328)
+##    oxygen5: NA, NA, ..., 9.1651, 9.1651 (length 328)
+##    density2: NA, NA, ..., NA, NA (length 328)
+##    sigmaTheta2: NA, NA, ..., NA, NA (length 328)
+##    depth3: NA, NA, ..., NA, NA (length 328)
+##    oxygen6: NA, NA, ..., NA, NA (length 328)
+##    theta2: NA, NA, ..., NA, NA (length 328)
+##    salinity2: NA, NA, ..., NA, NA (length 328)
+##    soundSpeed2: NA, NA, ..., NA, NA (length 328)
+##    specificVolumeAnomaly2: NA, NA, ..., NA, NA (length 328)
+##    thermostericAnomaly2: NA, NA, ..., NA, NA (length 328)
+##    oxygen7: NA, NA, ..., NA, NA (length 328)</code></pre>
+<p>To extract a field from the ctd cast, you can use either of the following</p>
+<pre class="r"><code>S278$ctd[[1]]@data$temperature</code></pre>
+<pre class="r"><code>S278$ctd[[1]][[&quot;temperature&quot;]]</code></pre>
+<pre><code>##   [1]        NA        NA        NA        NA        NA 15.733213 15.731324
+##   [8] 15.722442 15.733764 15.733324 15.725572 15.722007 15.721071 15.717374
+##  [15] 15.715717 15.725457 15.719267 15.711500 15.706650 15.706429 15.705480
+##  [22] 15.692700 15.670500 15.638833 15.616183 15.583656 15.533362 15.473600
+##  [29] 15.417533 15.357400 15.283350 15.234876 15.119650 15.017867 14.940800
+##  [36] 14.931933 14.922525 14.917800 14.909850 14.763650 14.414400 14.100300
+##  [43] 13.990067 13.921900 13.891063 13.797100 13.740950 13.705100 13.646280
+##  [50] 13.607700 13.596690 13.538450 13.491667 13.447850 13.399008 13.320782
+##  [57] 13.175000 13.059433 13.011250 12.964440 12.929693 12.912950 12.838175
+##  [64] 12.829320 12.826427 12.819300 12.804644 12.785200 12.766367 12.683500
+##  [71] 12.560750 12.531880 12.484225 12.451540 12.427720 12.422575 12.407310
+##  [78] 12.391543 12.357650 12.366000 12.378700 12.381488 12.383000 12.391550
+##  [85] 12.368567 12.318500 12.280507 12.249493 12.157000 12.073650 11.986125
+##  [92] 11.963464 11.912475 11.798300 11.745300 11.731795 11.719140 11.703340
+##  [99] 11.672800 11.651000 11.618659 11.587414 11.594025 11.611033 11.620067
+## [106] 11.630400 11.636375 11.646167 11.666650 11.687050 11.714217 11.738124
+## [113] 11.693517 11.674814 11.652443 11.611018 11.582214 11.516150 11.461525
+## [120] 11.430300 11.388180 11.369023 11.350140 11.343025 11.340450 11.330153
+## [127] 11.320325 11.312175 11.296333 11.278325 11.240081 11.197833 11.188450
+## [134] 11.182200 11.165267 11.164569 11.158367 11.151950 11.148370 11.143978
+## [141] 11.141127 11.132150 11.131650 11.125960 11.124300 11.120152 11.120180
+## [148] 11.126567 11.130120 11.133950 11.130800 11.119967 11.075590 11.041100
+## [155] 11.033860 11.019875 10.986883 11.005467 11.023157 11.003850 10.996750
+## [162] 11.007500 10.999500 10.997371 11.009263 10.977633 10.972400 10.973950
+## [169] 10.997343 11.003700 10.942600 10.915225 10.909471 10.906075 10.886178
+## [176] 10.889200 10.901367 10.925800 10.937120 10.982580 10.999567 10.999543
+## [183] 11.000525 10.986867 10.964333 10.959600 10.959745 10.960673 10.956650
+## [190] 10.920525 10.892275 10.883933 10.899220 10.984587 11.038020 11.032460
+## [197] 11.021300 11.009855 10.999500 10.985400 10.949900 10.911860 10.886591
+## [204] 10.857258 10.847129 10.838250 10.833800 10.833406 10.831591 10.832500
+## [211] 10.816300 10.806500 10.807389 10.807633 10.806683 10.806340 10.802800
+## [218] 10.800160 10.800711 10.793050 10.777800 10.749220 10.729459 10.710050
+## [225] 10.680500 10.666150 10.652300 10.625827 10.559375 10.481767 10.358767
+## [232] 10.318867 10.316061 10.358500 10.345900 10.319967 10.262814 10.259654
+## [239] 10.255245 10.258980 10.261020 10.259575 10.198236 10.168717 10.156787
+## [246] 10.132480 10.071633 10.043038 10.023433 10.018425 10.012700  9.988133
+## [253]  9.964400  9.942937  9.935225  9.897833  9.878025  9.844700  9.812950
+## [260]  9.785033  9.767033  9.753664  9.741509  9.725436  9.713050  9.700050
+## [267]  9.683250  9.673360  9.665109  9.643200  9.628550  9.608613  9.569282
+## [274]  9.548000  9.524233  9.512900  9.513891  9.515858  9.516800  9.516067
+## [281]  9.518275  9.522723  9.535125  9.542533  9.561733  9.587440  9.610447
+## [288]  9.629675  9.637100  9.628700  9.570950  9.512647  9.496377  9.500675
+## [295]  9.509620  9.516713  9.528050  9.524340  9.522300  9.506433  9.454700
+## [302]  9.427675  9.421050  9.437800  9.437600  9.435829  9.428900  9.424425
+## [309]  9.418000  9.414256  9.401900  9.402700  9.407412  9.407113  9.409833
+## [316]  9.412771  9.414829  9.415733  9.421243  9.423533  9.425069  9.428300
+## [323]  9.429410  9.430419  9.429167  9.429867  9.429124  9.429179</code></pre>
+<p>So wrangling this data to ggplot is not going to be straight-forward and will need some thought depending on what your goals are. If you wanted to plot a single profile, your code might look like this</p>
+<pre class="r"><code>library(tidyverse)
+df &lt;- tibble(depth = S278$ctd[[1]][[&quot;depth&quot;]],
+             temp = S278$ctd[[1]][[&quot;temperature&quot;]],
+             sal = S278$ctd[[1]][[&quot;salinity&quot;]])
+ggplot(df, aes(temp,depth)) +
+  geom_path() +
+  scale_y_reverse()</code></pre>
+<p><img src="/post/previous_data_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>or faceting and making it look nice:</p>
+<pre class="r"><code>df2 &lt;- gather(df,key = &quot;key&quot;, value = &quot;value&quot;, sal, temp)
+ggplot(df2,aes(value, depth)) +
+  geom_path() +
+  facet_wrap(~key, scales = &quot;free_x&quot;, strip.position = &quot;bottom&quot;, 
+                labeller = as_labeller(c(temp = &quot;Temperature&quot;, sal = &quot;Salinity&quot;))) +
+  scale_y_reverse() +
+  labs(x = NULL) +
+  theme_bw() +
+  theme(strip.background = element_blank(), strip.placement = &quot;outside&quot;)</code></pre>
+<p><img src="/post/previous_data_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="adcp" class="section level2">
+<h2>adcp</h2>
+<p>This data is organized as matrices of u (east-west) and v (north-south) component of the velocity at depth in the ocean. It is perhaps the least clean of all the data in our records and Ben can help you work through this as needed.</p>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

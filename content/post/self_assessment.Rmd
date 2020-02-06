@@ -1,0 +1,85 @@
+---
+title: "Self Assessment"
+weight: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+```
+
+# Instructions
+
+The following is a self-assessment of your current level of skills in R. Please create a new script to complete the following exercises. If you are new to R, you will likely only get to somewhere in Task 1. Otherwise, go on as far as you can. Let Ben know when you've gone as far as you can so he can check you off. This is not a test, just data gathering.
+
+# Task 1: Vectors
+
+- Assign the number `1, 18, 4, 32, 23, 41, 39, 5` to a vector call `my_nums`.
+- Find the total sum of `my_nums`.
+- create a new vector call `my_nums2` which is `my_nums` multiplied by `2`.
+- create another new vector called `my_nums3` which is `my_nums` added to `my_nums2`.
+- Use indexing to extract the third value in `my_nums3`
+- Find which of the values in `my_num3` are greater than `100`.
+
+```{r, include=FALSE}
+my_nums <- c(1,18,4,32,23,41,39,5)
+sum(my_nums)
+my_nums2 <- my_nums * 2
+my_nums3 <- my_nums + my_nums2
+my_nums3[3]
+nums_gt100 <- my_nums3[my_nums3>100]
+```
+
+# Task 2: Data Frames
+
+- Load the `tidyverse` library
+- Use the built in dataset `mpg` for the following [NB: mpg contains cars, their engine sizes (`displ`) and other parameters. See help(mpg) for more details.]:
+    + Print the first few rows of the dataset out in the console.
+    + Extract just the column `displ` using both named indexing and by column number
+    + Find the mean of column `displ`
+    + Find all the values of `displ` which are greater than `3`.
+    + Sort the data frame by increasing `displ`.
+    
+```{r, include=FALSE}
+library(tidyverse)
+mpg
+mpg$displ
+mpg["displ"]
+mpg[3]
+mean(mpg$displ)
+mpg$displ[mpg$displ>3]
+mpg2 <- mpg[order(mpg$displ),]
+mpg2
+```
+   
+   
+## Task 3: ggplot
+
+- load the `tidyverse` library.
+- Use the dataset `msleep` and `ggplot` for the following tasks [NB: `msleep` is a mammal sleep data set. See `?msleep` for more details]:
+    + plot `sleep_total` verses `sleep_rem` as a series of points (scatter graph)
+    + add a smoothing line
+    + color the point and smoothing lines by `vore`.
+    + facet the plot by `vore`
+    + apply the `bw` theme
+    
+```{r, include = F}
+ggplot(msleep, aes(sleep_total,sleep_rem, color = vore)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~vore) +
+  theme_bw()
+```
+
+  
+## Task 4: Maps
+
+- use the USA map data in `map_data("usa")` for this task:
+    + plot the `long` and `lat` values as a polygon in ggplot
+    + correctly proportion the x and y axis to be map-like
+    + change the default color of the fill and border of the polygon
+    
+```{r, include = F}
+ggplot(map_data("usa"),aes(long,lat)) +
+  geom_polygon(color = "red", fill = "black") +
+  coord_quickmap()
+```
