@@ -4,6 +4,7 @@ weight: 5
 output:
   blogdown::html_page:
     toc: true
+draft: true
 ---
 
 ```{r setup, include=FALSE}
