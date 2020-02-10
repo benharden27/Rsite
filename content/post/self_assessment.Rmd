@@ -1,6 +1,7 @@
 ---
 title: "Self Assessment"
 weight: 2
+draft: true
 ---
 
 ```{r setup, include=FALSE}
