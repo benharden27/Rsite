@@ -1,7 +1,6 @@
 ---
-title: Additional Plotting Tools
+title: Plotting II - Changing Aesthetics
 weight: 4
-draft: true
 ---
 
 Data for this exercise can be found [here](../../data_raw/S258_surfsamp.csv).

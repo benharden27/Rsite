@@ -32,21 +32,21 @@ Dan Kelley (Dalhousie) has a nice book on oceanographic analysis in R (in classr
     </item>
     
     <item>
-      <title>Initial Plotting</title>
-      <link>/rtopic/initial-plotting/</link>
+      <title>Plotting I - Initial Tools</title>
+      <link>/rtopic/plotting-i-initial-tools/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/rtopic/initial-plotting/</guid>
-      <description>Introduction to Plotting in ggplot Data for this exercise can be found here.
-In this class, we will begin plotting data using ggplot. ggplot is a powerful tool for producing elegant graphics and is relatively simple to use once you’ve mastered a few key ideas. We’re going to be using this tool to experiment with visualizing data from a SEA Semester cruise across the South Pacific undertaken in 2014 (S258).</description>
+      <guid>/rtopic/plotting-i-initial-tools/</guid>
+      <description>Data for this exercise can be found here.
+In this class, we will begin plotting data using ggplot. ggplot is a powerful tool for producing elegant graphics and is relatively simple to use once you’ve mastered a few key ideas. We’re going to be using this tool to experiment with visualizing data from a SEA Semester cruise across the South Pacific undertaken in 2014 (S258). We’re going to be using a subset of the neuston net data (surface tow) from that cruise.</description>
     </item>
     
     <item>
-      <title>Additional Plotting Tools</title>
-      <link>/rtopic/additional-plotting-tools/</link>
+      <title>Plotting II - Changing Aesthetics</title>
+      <link>/rtopic/plotting-ii-changing-aesthetics/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/rtopic/additional-plotting-tools/</guid>
+      <guid>/rtopic/plotting-ii-changing-aesthetics/</guid>
       <description>Data for this exercise can be found here.
 In this class, we will continue to practice plotting data using ggplot and extend what we know to include how we format our plots to look nice for publication. We will be plotting data from a previous SEA cruise (S258)
 Prerequisites Before this class, you should have worked through chapter 28 of R for Data Science by Garrett Grolemund and Hadley Wickham.</description>
