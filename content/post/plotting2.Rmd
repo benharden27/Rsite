@@ -147,7 +147,7 @@ You can change the color scales on your plots using functions in ggplot starting
 
 - [colorbrewer](http://colorbrewer2.org) provides a good selection of well thought-out and suitable color maps for discrete data and is implemented in ggplot using `scale_color_brewer()` for discrete data and `scale_color_distiller()` for continuous data
 
-```{r}
+```{r, include = TRUE}
 g + 
   scale_color_distiller(palette = "GnBu")
 ```
@@ -155,7 +155,7 @@ g +
 
 - the `viridis` package is designed specifically for continuous data.
 
-```{r}
+```{r, include = TRUE}
 library(viridis)
 g +
   scale_color_viridis()
@@ -163,7 +163,7 @@ g +
 
 - the `oce` package has some typical scales used throughout oceanography
 
-```{r}
+```{r, include = TRUE}
 library(oce)
 g +
   scale_color_gradientn(colors = oceColorsTemperature(100))
@@ -171,14 +171,14 @@ g +
 
 You can also change the number of breaks and labels as well (NB: the following example is silly, but shows that you can replace labels with anything that you like as long as your labels vector is the same length as your breaks vector). 
 
-```{r}
+```{r, include = TRUE}
 g +
   scale_color_viridis(breaks = seq(33.5,35.5,.5), labels = c("a","b","c","d","e"))
 ```
 
 To that end, you can also create custom tick breaks for the x and y axes too:
 
-```{r}
+```{r, include = TRUE}
 g +
   scale_y_continuous(breaks = c(16,17,20,21,25))
 ```
