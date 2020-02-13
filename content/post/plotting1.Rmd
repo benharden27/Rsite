@@ -6,7 +6,7 @@ weight: 3
 Data for this exercise can be found [here](../../data_raw/S258_neuston.csv).
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cahce = TRUE, include = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE, cahce = TRUE, include = FALSE, message = TRUE, warning = FALSE)
 ```
 
 In this class, we will begin plotting data using [ggplot](https://ggplot2.tidyverse.org/index.html). ggplot is a powerful tool for producing elegant graphics and is relatively simple to use once you've mastered a few key ideas. We're going to be using this tool to experiment with visualizing data from a SEA Semester cruise across the South Pacific undertaken in 2014 (S258). We're going to be using a subset of the neuston net data (surface tow) from that cruise.
@@ -24,7 +24,7 @@ Before this class, you should have worked through [chapter 3](https://r4ds.had.c
 
 I advise you to open a new R Script for this class (File -> New File -> R Script). You can store all the code you create in there and either run line by line (Ctrl/Cmd + Enter) or in bulk (using "play" button at top of script or by using keyboard [shortcut](https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts)). This is also useful for future reference. Don't forget to comment on your code using `#` at the start of a line to make it clear what each piece of code does.
 
-ggplot is a package contained in the [tidyverse](https://www.tidyverse.org/) set of packages. So to run the functions contained, we first need to load the library into our work environment. You should have already installed this by running `install.packages("tidyverse") which is a one-time action. You do however need to load the packages you need every time you restart your R session (i.e. close and reopen R Studio)
+ggplot is a package contained in the [tidyverse](https://www.tidyverse.org/) set of packages. So to run the functions contained, we first need to load the library into our work environment. You should have already installed this by running `install.packages("tidyverse")` which is a one-time action. You do however need to load the packages you need every time you restart your R session (i.e. close and reopen R Studio)
 
 ```{r, include = TRUE}
 library(tidyverse)
@@ -32,7 +32,7 @@ library(tidyverse)
 
 This not only loads ggplot, but also other packages that we are going to use in this and other classes for tidying data sets. The "conflicts" comments are nothing to worry too much about - this is tidyverse telling us that some of the functions we just imported share names with ones already defined by R and that tidyverse will take precedent.
 
-As some of you have had issues installing the complete `tidyverse`, we'll also be able to do all the exercises contained here by just loading the following libraries:
+If you had any issues installing the complete `tidyverse`, we'll also be able to do all the exercises contained here by just loading the following libraries:
 
 ```{r}
 library(ggplot2)
@@ -42,7 +42,7 @@ library(readr)
 
 ## Reading in the data
 
-You need to go get the data from the top of this page and save it somewhere sensible on your computer (not your Desktop please) -- see notes from previous class about file organization. Once you have the data where you want it, look at it in a text editor (TextEdit, wordpad, etc.). It's a Comma-Separated-Value file (CSV) which is one of the most common data formats used for sharing data in a way that can be useful across platforms. As the name suggests, our data is organized into columns, each separated by a comma, line-by-line. The first row of our data (as in many data sets) are the names of each of the columns. If you loaded this data into Excel, it would automatically recognize this format and convert it into the standard visual layout you might expect from an Excel file.
+You need to go get the data from the top of this page and save it somewhere sensible on your computer (not your Desktop please). Once you have the data where you want it, look at it in a text editor (TextEdit, wordpad, etc.). It's a Comma-Separated-Value file (CSV) which is one of the most common data formats used for sharing data in a way that can be useful across platforms. As the name suggests, our data is organized into columns, each separated by a comma, line-by-line. The first row of our data (as in many data sets) are the names of each of the columns. If you loaded this data into Excel, it would automatically recognize this format and convert it into the standard visual layout you might expect from an Excel file.
 
 We can read the data into our environment using `read_csv()`, a handy tool that is contained in the tidyverse packages. The only thing you *need* to tell `read_csv()` is where the CSV data file lives on your computer by way of a file path. On my computer it looks like this:
 
@@ -52,13 +52,17 @@ df <- read_csv("~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_neuston.csv")
 
 You will need to replace the path I have given with the path on your computer. `read_csv()` takes in a number of other parameter if you want to fine-tune how it reads your data (look at `?read_csv()` for more details), but for our data, just the file path will suffice. As you can see from the read-out, it has even guessed at the format of each of the columns based on the data contained in the file.
 
+Note: The tiidyverse `read_csv()` can often get confused with the basic R reader `read.csv()`. That will cause you some issues if you use the wrong one.
+
 ## Initial look at the data
 
 The data has been imported into a **data frame** in R. Side note: Technically we're working with a tidyverse "tibble", but its built on the base R data frame, so let's not get bogged down in details at this point. I'll refer to them as data frames throughout.
 
 Data frames are the most common way of organizing data in R and the form that ggplot requires for making plots. It's very similar to how Excel organizes data in rows and columns and, like Excel, there are a number of ways people choose to organize their data in this format. However, ggplot (and other tidyverse packages) focus on using "tidy" data: Each observation has a row and each variable is organized into a column.
 
-![Visualization of how values are organized in a data frame (reproduced from R for Data Science)](/Users/benjamin/Documents/SEA/S285_OC/dcv/R/classes/tidy_1.png)
+```{r, fig.cap="Visualization of how values are organized in a data frame (reproduced from R for Data Science)", out.width = '100%', echo=FALSE}
+knitr::include_graphics("../../images/tidy_1.png")
+```
 
 Lets have a look at the data we have just read in. You can either just type the name of the data frame into the console:
 
@@ -296,7 +300,7 @@ ggplot(df, aes(daynight, biomass)) +
 The outliers make this a little hard to interpret -- how would we go about zooming in a little on the y axis? For x and y axis zooming, we basically have two options.
 
 1. We can scale the data such that we cut off values above or below a certain value using the `xlim` and `ylim` functions. In our case we will use, for example `ylim(0,100)` 
-2. We can simply "zoom in" without removing data using the `coord_cartesian()` function. In our case this will be `coord_cartesian(ylim = c(0,100))
+2. We can simply "zoom in" without removing data using the `coord_cartesian()` function. In our case this will be `coord_cartesian(ylim = c(0,100))`
 
 The choice you make will sometimes make a big difference depending on what data you are plotting. In our case it will make a difference.
 

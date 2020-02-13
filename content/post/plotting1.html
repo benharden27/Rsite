@@ -18,28 +18,48 @@ weight: 3
 <h2>Prerequisites</h2>
 <p>Before this class, you should have worked through <a href="https://r4ds.had.co.nz/data-visualisation.html">chapter 3</a> of <a href="https://r4ds.had.co.nz/index.html">R for Data Science</a> by Garrett Grolemund and Hadley Wickham. This should have introduced you to the basic ideas behind ggplot and helped you create your first plots using their built-in data. We’re not going to take these ideas and apply them to an ocean data set.</p>
 <p>I advise you to open a new R Script for this class (File -&gt; New File -&gt; R Script). You can store all the code you create in there and either run line by line (Ctrl/Cmd + Enter) or in bulk (using “play” button at top of script or by using keyboard <a href="https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts">shortcut</a>). This is also useful for future reference. Don’t forget to comment on your code using <code>#</code> at the start of a line to make it clear what each piece of code does.</p>
-<p>ggplot is a package contained in the <a href="https://www.tidyverse.org/">tidyverse</a> set of packages. So to run the functions contained, we first need to load the library into our work environment. You should have already installed this by running `install.packages(“tidyverse”) which is a one-time action. You do however need to load the packages you need every time you restart your R session (i.e. close and reopen R Studio)</p>
+<p>ggplot is a package contained in the <a href="https://www.tidyverse.org/">tidyverse</a> set of packages. So to run the functions contained, we first need to load the library into our work environment. You should have already installed this by running <code>install.packages("tidyverse")</code> which is a one-time action. You do however need to load the packages you need every time you restart your R session (i.e. close and reopen R Studio)</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
+## ✓ tibble  2.1.3     ✓ dplyr   0.8.3
+## ✓ tidyr   1.0.0     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
 <p>This not only loads ggplot, but also other packages that we are going to use in this and other classes for tidying data sets. The “conflicts” comments are nothing to worry too much about - this is tidyverse telling us that some of the functions we just imported share names with ones already defined by R and that tidyverse will take precedent.</p>
-<p>As some of you have had issues installing the complete <code>tidyverse</code>, we’ll also be able to do all the exercises contained here by just loading the following libraries:</p>
-<pre class="r"><code>library(ggplot2)
-library(readr)</code></pre>
+<p>If you had any issues installing the complete <code>tidyverse</code>, we’ll also be able to do all the exercises contained here by just loading the following libraries:</p>
 </div>
 <div id="reading-in-the-data" class="section level2">
 <h2>Reading in the data</h2>
-<p>You need to go get the data from the top of this page and save it somewhere sensible on your computer (not your Desktop please) – see notes from previous class about file organization. Once you have the data where you want it, look at it in a text editor (TextEdit, wordpad, etc.). It’s a Comma-Separated-Value file (CSV) which is one of the most common data formats used for sharing data in a way that can be useful across platforms. As the name suggests, our data is organized into columns, each separated by a comma, line-by-line. The first row of our data (as in many data sets) are the names of each of the columns. If you loaded this data into Excel, it would automatically recognize this format and convert it into the standard visual layout you might expect from an Excel file.</p>
+<p>You need to go get the data from the top of this page and save it somewhere sensible on your computer (not your Desktop please). Once you have the data where you want it, look at it in a text editor (TextEdit, wordpad, etc.). It’s a Comma-Separated-Value file (CSV) which is one of the most common data formats used for sharing data in a way that can be useful across platforms. As the name suggests, our data is organized into columns, each separated by a comma, line-by-line. The first row of our data (as in many data sets) are the names of each of the columns. If you loaded this data into Excel, it would automatically recognize this format and convert it into the standard visual layout you might expect from an Excel file.</p>
 <p>We can read the data into our environment using <code>read_csv()</code>, a handy tool that is contained in the tidyverse packages. The only thing you <em>need</em> to tell <code>read_csv()</code> is where the CSV data file lives on your computer by way of a file path. On my computer it looks like this:</p>
 <pre class="r"><code>df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_neuston.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   station = col_character(),
+##   dttm = col_datetime(format = &quot;&quot;),
+##   lon = col_double(),
+##   lat = col_double(),
+##   temp = col_double(),
+##   sal = col_double(),
+##   fluor = col_double(),
+##   moon_phase = col_double(),
+##   moon_mode = col_character(),
+##   tow_dist = col_double(),
+##   biomass = col_double(),
+##   nekt_total_num = col_double(),
+##   nekt_total_vol = col_double(),
+##   daynight = col_character()
+## )</code></pre>
 <p>You will need to replace the path I have given with the path on your computer. <code>read_csv()</code> takes in a number of other parameter if you want to fine-tune how it reads your data (look at <code>?read_csv()</code> for more details), but for our data, just the file path will suffice. As you can see from the read-out, it has even guessed at the format of each of the columns based on the data contained in the file.</p>
+<p>Note: The tiidyverse <code>read_csv()</code> can often get confused with the basic R reader <code>read.csv()</code>. That will cause you some issues if you use the wrong one.</p>
 </div>
 <div id="initial-look-at-the-data" class="section level2">
 <h2>Initial look at the data</h2>
 <p>The data has been imported into a <strong>data frame</strong> in R. Side note: Technically we’re working with a tidyverse “tibble”, but its built on the base R data frame, so let’s not get bogged down in details at this point. I’ll refer to them as data frames throughout.</p>
 <p>Data frames are the most common way of organizing data in R and the form that ggplot requires for making plots. It’s very similar to how Excel organizes data in rows and columns and, like Excel, there are a number of ways people choose to organize their data in this format. However, ggplot (and other tidyverse packages) focus on using “tidy” data: Each observation has a row and each variable is organized into a column.</p>
-<div class="figure">
-<img src="/Users/benjamin/Documents/SEA/S285_OC/dcv/R/classes/tidy_1.png" alt="" />
-<p class="caption">Visualization of how values are organized in a data frame (reproduced from R for Data Science)</p>
-</div>
 <p>Lets have a look at the data we have just read in. You can either just type the name of the data frame into the console:</p>
 <pre class="r"><code>df</code></pre>
 <pre><code>## # A tibble: 54 x 14
@@ -194,7 +214,7 @@ library(readr)</code></pre>
 <p>So, as a first example, we can plot the temperature data over time in the following way:</p>
 <pre class="r"><code>ggplot(data = df) +
   geom_line(aes(x = dttm, y = temp))</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Where we have specified that:</p>
 <ol style="list-style-type: decimal">
 <li>our data is contained in the data frame, <code>df</code></li>
@@ -218,9 +238,10 @@ ggplot() +
   geom_line()</code></pre>
 <p>Doing this does <em>not</em> generate the plot, it just creates a ggplot object that can be deployed later by calling it by name or by adding another geom (for example a smoothing geom):</p>
 <pre class="r"><code>g</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code>g + geom_smooth()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
 </div>
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
@@ -236,91 +257,45 @@ ggplot() +
 <blockquote>
 <p>Examine the amount of zooplankton we caught in each tow. Plot the frequency distribution of the data using <code>geom_histogram</code>. Remember, you can (and should) specify the <code>binwidth</code> parameter in the geom. (This histogram will show you the number of casts for which a certain amount of biomass was caught). What does the distribution look like? Is it pretty even (i.e. as many casts with lots of biomass as with few)?</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(biomass)) +
-  geom_histogram(binwidth = 5)</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Histograms can give you a good sense of the distribution of your data but if you want to see each data point explicitly, you need to make a plot where you can resolve each point.</p>
 <blockquote>
 <p>Plot the biomass data as a function of time using points to plot each data value. Compare this plot to your histogram. Can you reconcile the two ways of looking at the same data? How is the spread of data in the histogram shown in your time series?</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(dttm, biomass)) +
-  geom_point()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <blockquote>
 <p>Experiment with plotting this biomass data using other relevent geoms for continuous data - i.e. <code>geom_line()</code>, <code>geom_path()</code>, <code>geom_area()</code></p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(dttm, biomass)) +
-  geom_area()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>These are standard time series - they show us the change in a value over time. However, time might not be our most important factor in the kind of oceanography we’ll be doing (a cruise typically can be thought of taking a snapshot over a wider region) so we might instead choose to plot against location.</p>
 <blockquote>
 <p>Plot fluoroesence against latitude using points. This will produce a clearer relationship than the biomass data will show. Add on a smooth line to track that broader change. What does this tell us about how many phytoplankton are in the water as we move along our cruise track? Why might that be?</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(lat, fluor)) +
-  geom_point() +
-  geom_smooth()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>What about how day and night differ? We can get at this by introducing another aesthetic such as color or shape.</p>
 <blockquote>
 <p>Make a similar plot of fluoroesence vs latitude, but this time add a “color”" aesthetic to be the “daynight”" parameter. Add a smoothing geom too. NB: If you define the color aesthetic in the call to ggplot(), then the geom_smooth will also automatically assign itself to these two categories. Try it again with assigning the aesthetic to “shape”. One thing you will notice is that ggplot will automatically assign a legend for you. Hurray!</p>
 </blockquote>
 <p>What patterns do you see? Do you think you’d see similar patterns in the amount of biomass between day and night?</p>
-<pre class="r"><code>ggplot(df, aes(lat, fluor, color = daynight)) +
-  geom_point() + 
-  geom_smooth()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
-<pre class="r"><code>ggplot(df, aes(lat, fluor, shape = daynight)) +
-  geom_point() + 
-  geom_smooth(aes(linetype = daynight), color = &quot;black&quot;)</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
 <blockquote>
 <p>Do the same plotting for biomass. Is the pattern the same?</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(lat, biomass, color = daynight)) +
-  geom_point() + 
-  geom_smooth()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>Another way to look at the differences between night and day is to facet the plots (i.e. creates subplots with data that meet different criteria on each)</p>
 <blockquote>
 <p>Use facet_wrap() to create facets for each of “day” and “night” for fluoroescence as a function of latitude.</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(lat, fluor)) +
-  geom_point() + 
-  geom_smooth() +
-  facet_wrap(~daynight)</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>Another way to explore this data might be in a box plot across the whole data set:</p>
 <blockquote>
 <p>Create a boxplot for each of “day” and “night” for biomass data</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(daynight, biomass)) +
-  geom_boxplot()</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>The outliers make this a little hard to interpret – how would we go about zooming in a little on the y axis? For x and y axis zooming, we basically have two options.</p>
 <ol style="list-style-type: decimal">
 <li>We can scale the data such that we cut off values above or below a certain value using the <code>xlim</code> and <code>ylim</code> functions. In our case we will use, for example <code>ylim(0,100)</code></li>
-<li>We can simply “zoom in” without removing data using the <code>coord_cartesian()</code> function. In our case this will be `coord_cartesian(ylim = c(0,100))</li>
+<li>We can simply “zoom in” without removing data using the <code>coord_cartesian()</code> function. In our case this will be <code>coord_cartesian(ylim = c(0,100))</code></li>
 </ol>
 <p>The choice you make will sometimes make a big difference depending on what data you are plotting. In our case it will make a difference.</p>
 <blockquote>
 <p>Try both methods of zooming in on the y axis - what difference does it make which method you use?</p>
 </blockquote>
-<pre class="r"><code>ggplot(df, aes(daynight, biomass)) +
-  geom_boxplot() +
-  coord_cartesian(ylim = c(0,100))</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<pre class="r"><code>ggplot(df, aes(daynight, biomass)) +
-  geom_boxplot() +
-  ylim(0,100)</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
 </div>
 <div id="additional-activities" class="section level2">
 <h2>Additional activities</h2>
 <p>Is biomass a good value to compare between stations? What might be a better metric for comparison of the amount of zooplankton between regions? How would you go about making this new data? Hint: Explore the tow_dist column a little.</p>
 <p>How would you test the relationship between the amount of biomass and the amount of phytoplankton? Look at the options within geom_smooth to see about how to plot a regression line.</p>
-<pre class="r"><code>ggplot(df, aes(fluor, biomass/tow_dist)) +
-  geom_point() +
-  geom_smooth(method=&#39;lm&#39;) +
-  coord_cartesian(ylim = c(0,0.25))</code></pre>
-<p><img src="/post/plotting1_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>

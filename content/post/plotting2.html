@@ -125,7 +125,6 @@ library(readr)</code></pre>
   geom_line(color = &quot;#2ca25f&quot;, size = 3, linetype = &quot;dashed&quot;, lineend = &quot;round&quot;, linejoin = &quot;mitre&quot;)</code></pre>
 <p><img src="/post/plotting2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>You can check out all the aesthetics you can set in the ggplot vignette below.</p>
-<pre class="r"><code>vignette(&quot;ggplot2-specs&quot;)</code></pre>
 </div>
 <div id="labels" class="section level3">
 <h3>Labels</h3>
@@ -145,32 +144,11 @@ g</code></pre>
 <ul>
 <li><p>Use one of the built-in color scale tools such as <code>scale_color_gradient()</code> which creates a gradient between two colors or <code>scale_color_gradient2()</code> which creates a color map between three colors</p></li>
 <li><p><a href="http://colorbrewer2.org">colorbrewer</a> provides a good selection of well thought-out and suitable color maps for discrete data and is implemented in ggplot using <code>scale_color_brewer()</code> for discrete data and <code>scale_color_distiller()</code> for continuous data</p></li>
+<li><p>the <code>viridis</code> package is designed specifically for continuous data.</p></li>
+<li><p>the <code>oce</code> package has some typical scales used throughout oceanography</p></li>
 </ul>
-<pre class="r"><code>g + 
-  scale_color_distiller(palette = &quot;GnBu&quot;)</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<ul>
-<li>the <code>viridis</code> package is designed specifically for continuous data.</li>
-</ul>
-<pre class="r"><code>library(viridis)
-g +
-  scale_color_viridis()</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<ul>
-<li>the <code>oce</code> package has some typical scales used throughout oceanography</li>
-</ul>
-<pre class="r"><code>library(oce)
-g +
-  scale_color_gradientn(colors = oceColorsTemperature(100))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>You can also change the number of breaks and labels as well (NB: the following example is silly, but shows that you can replace labels with anything that you like as long as your labels vector is the same length as your breaks vector).</p>
-<pre class="r"><code>g +
-  scale_color_viridis(breaks = seq(33.5,35.5,.5), labels = c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>To that end, you can also create custom tick breaks for the x and y axes too:</p>
-<pre class="r"><code>g +
-  scale_y_continuous(breaks = c(16,17,20,21,25))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>You can also curtail your color axis like you might an x and y axis</p>
 <pre class="r"><code>g + 
   scale_color_viridis(limits = c(35,35.5))</code></pre>

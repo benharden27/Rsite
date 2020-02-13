@@ -6,7 +6,7 @@ weight: 4
 Data for this exercise can be found [here](../../data_raw/S258_surfsamp.csv).
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, include = TRUE, cache = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE, include = FALSE, cache = TRUE, message = FALSE, warning = FALSE)
 ```
 
 In this class, we will continue to practice plotting data using [ggplot](https://ggplot2.tidyverse.org/index.html) and extend what we know to include how we format our plots to look nice for publication. We will be plotting data from a previous SEA cruise (S258)
@@ -105,7 +105,7 @@ I'm just going to run through some of the key parts of the homework chapter now 
 
 You can change the colors of you plot when you define the geom. All you have do do is declare the color, size, etc. outside of the `aes()` function. That way you are saying that you want the geom to have that property universally rather than mapping a variable to that aesthetic.
 
-```{r}
+```{r, include=TRUE}
 ggplot(df, aes(dttm, temp)) +
   geom_point(color = "red", size = 10, shape = 5) +
   geom_smooth(color = "black")
@@ -113,7 +113,7 @@ ggplot(df, aes(dttm, temp)) +
 
 Color can also be specified in the RGB format "#RRGGBBAA". See the color brewer page for more info on that. Below is an example of some of the stuff you can change for a line.
 
-```{r}
+```{r, include = TRUE}
 ggplot(df, aes(dttm, temp)) +
   geom_line(color = "#2ca25f", size = 3, linetype = "dashed", lineend = "round", linejoin = "mitre")
 ```
