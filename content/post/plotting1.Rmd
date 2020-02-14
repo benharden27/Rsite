@@ -6,7 +6,7 @@ weight: 3
 Data for this exercise can be found [here](../../data_raw/S258_neuston.csv).
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cahce = TRUE, include = FALSE, message = TRUE, warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE, include = TRUE, message = TRUE, warning = FALSE)
 ```
 
 In this class, we will begin plotting data using [ggplot](https://ggplot2.tidyverse.org/index.html). ggplot is a powerful tool for producing elegant graphics and is relatively simple to use once you've mastered a few key ideas. We're going to be using this tool to experiment with visualizing data from a SEA Semester cruise across the South Pacific undertaken in 2014 (S258). We're going to be using a subset of the neuston net data (surface tow) from that cruise.
