@@ -4,26 +4,26 @@ weight: 5
 output:
   blogdown::html_page:
     toc: true
-draft: true
+    toc_depth: 2
 ---
 
 
 <div id="TOC">
 <ul>
-<li><a href="#atmospheric-co2">Atmospheric CO2</a></li>
-<li><a href="#sea-ice">Sea Ice</a></li>
-<li><a href="#paleo-records">Paleo Records</a></li>
+<li><a href="#atmospheric-co2-recent">Atmospheric CO2 (recent)</a></li>
 <li><a href="#surface-temperature">Surface Temperature</a></li>
-<li><a href="#ocean-acidification">Ocean Acidification</a></li>
-<li><a href="#sea-level-rise">Sea Level Rise</a></li>
+<li><a href="#paleo-records">Paleo Records</a></li>
 <li><a href="#upper-ocean-temperature">Upper Ocean Temperature</a></li>
+<li><a href="#sea-ice">Sea Ice</a></li>
+<li><a href="#ocean-acidification">Ocean Acidification</a></li>
 <li><a href="#ice-mass-balance">Ice Mass Balance</a></li>
+<li><a href="#sea-level-rise">Sea Level Rise</a></li>
 </ul>
 </div>
 
 <p>Below are links to some preformatted data set related to the presentations you gave last Friday about our changing climate. I have taken the raw data files and made them neat for plotting. If you feel confident with the plotting you should try and work up the data from the raw version.</p>
-<p>Your job today is to pick a data set, load it in, and explore the data and ways you might be able to plot it that would make sense. Think about what we’ve covered so far in terms of creating geoms, formatting plots and playing around with presentation.</p>
-<p>In the next few days, you will build the context around these plots and create a presentation of the data and it’s context.</p>
+<p>You should find your assigned data and then work to read it in and experiment with ways you might be able to plot it that would make sense. Think about what we’ve covered so far in terms of creating geoms, formatting plots, and playing around with aesthetic presentation.</p>
+<p>Be sure to check out all relevant metadata from the linked sites to ensure you fully understand the data you are working with.</p>
 <p><strong>Note on wrangling</strong></p>
 <p>If you feel like you would enjoy the challenge of working up the data from the raw data provided on the websites of any of the data sets, you should refer to the <a href="https://r4ds.had.co.nz/wrangle-intro.html">Wrangle Chapter</a> or R for Data Science, especially the <a href="https://r4ds.had.co.nz/data-import.html">Data Import</a> and <a href="https://r4ds.had.co.nz/tidy-data.html">Tidy data</a> chapters. There’s a whole slew of tools you will need to massage the data into a nice format, but some of the key things will be:</p>
 <ul>
@@ -34,17 +34,26 @@ draft: true
 <li><code>gather()</code> function can take data spread over multiple columns and bring it into one place. This is especially useful if your data is organized with year on the row names and months in the columns.</li>
 <li><code>readxl</code> package has a <code>read_excel()</code> function for reading in Excel datasheets</li>
 </ul>
-<div id="atmospheric-co2" class="section level1">
-<h1>Atmospheric CO2</h1>
-<p>I got the Mauna loa data set from the <a href="http://scrippsco2.ucsd.edu/data/atmospheric_co2/">Keeling group page</a>, but you can also get it from <a href="https://www.esrl.noaa.gov/gmd/ccgg/trends/data.html">NOAA</a>. The Keeling group page also has data sets from other stations, but note that this data would need to be wrangled into the right format for plotting.</p>
+<div id="atmospheric-co2-recent" class="section level1">
+<h1>Atmospheric CO2 (recent)</h1>
+<p>I got the Mauna Loa data set from the <a href="http://scrippsco2.ucsd.edu/data/atmospheric_co2/">Keeling group page</a>, but you can also get it from <a href="https://www.esrl.noaa.gov/gmd/ccgg/trends/data.html">NOAA</a>. The Keeling group page also has data sets from other stations, but note that this data would need to be wrangled into the right format for plotting. Here, I’ve got the Mauna Loa and Bering Head data sets.</p>
 <ul>
 <li><a href="../../climatedata/csv/CO2_mauna_loa.csv">Mauna Loa CO2 CSV</a></li>
 <li><a href="../../climatedata/csv/CO2_bering_head.csv">Bering Head CO2 CSV</a></li>
 <li><a href="../../climatedata/raw/monthly_in_situ_co2_mlo.csv">Mauna Loa CO2 RAW</a></li>
 <li><a href="../../climatedata/raw/monthly_flask_co2_nzd.csv">Bering Head CO2 RAW</a></li>
 </ul>
+<div id="fields" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>time: Time in decimal years</li>
+<li>co2: Carbon Dioxide Concentration in parts per million</li>
+</ul>
+</div>
+<div id="questions-to-ponder" class="section level3">
+<h3>Questions to Ponder</h3>
 <blockquote>
-<p>How is it best to plot Atmospheric CO2 changes?</p>
+<p>How is it best to plot Atmospheric CO_2_ changes?</p>
 </blockquote>
 <blockquote>
 <p>Can you plot multiple records on the same plot?</p>
@@ -53,34 +62,59 @@ draft: true
 <p>Can you add this data onto the CO2 record from paleo?</p>
 </blockquote>
 </div>
-<div id="sea-ice" class="section level1">
-<h1>Sea Ice</h1>
-<p>Data is from <a href="https://nsidc.org/arcticseaicenews/sea-ice-tools/">NSIDC</a> in excel format.</p>
+</div>
+<div id="surface-temperature" class="section level1">
+<h1>Surface Temperature</h1>
+<p>Data is temperature anomalies compiled by NASA and available on their <a href="https://data.giss.nasa.gov/gistemp/">website</a>. Also some good <a href="https://data.giss.nasa.gov/gistemp/faq/abs_temp.html">FAQs</a> about how this is calculated. These anomalies are calculated relative to the baseline period 1951 – 1980.</p>
 <ul>
-<li><a href="../../climatedata/csv/sea_ice_extent.csv">Sea ice record CSV</a></li>
-<li><a href="../../climatedata/raw/Sea_Ice_Index_Daily_Extent_G02135_v3.0.xlsx">Sea ice record RAW</a></li>
+<li><a href="../../climatedata/csv/nasa_surftemp.csv">Air surface temperature anomaly CSV</a></li>
+<li><a href="../../climatedata/raw/climate_raw/surftemp_NASA.csv">Air surface temp raw RAW</a></li>
 </ul>
+<div id="fields-1" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>time: Time in decimal years</li>
+<li>year: Integer year</li>
+<li>month: Month of year</li>
+<li>temp: Temperature anomaly in degrees C compared to average of 1951 – 1980.</li>
+</ul>
+</div>
+<div id="questions-to-ponder-1" class="section level3">
+<h3>Questions to Ponder</h3>
 <blockquote>
-<p>How best to show such a seasonally varying signal and the changes?</p>
+<p>What do we understand by “temperature anomaly”?</p>
 </blockquote>
 <blockquote>
-<p>Can you plot the trend lines for different seasons?</p>
+<p>Can you join this record up with the paleo record?</p>
 </blockquote>
 <blockquote>
-<p>How can you measure the magnitude of the changes?</p>
+<p>How best to indicate the baseline period?</p>
 </blockquote>
+</div>
 </div>
 <div id="paleo-records" class="section level1">
 <h1>Paleo Records</h1>
-<p>Data is from Antarctic ice cores and can be accessed via <a href="https://cdiac.ess-dive.lbl.gov/trends/co2/ice_core_co2.html">CDIAC</a> which will take you to the <a href="https://www.ncdc.noaa.gov/data-access/paleoclimatology-data/datasets/ice-core">NOAA Ice Core data site</a>. CO2 data recovered from this (data page)[<a href="https://www.ncdc.noaa.gov/paleo-search/study/6091" class="uri">https://www.ncdc.noaa.gov/paleo-search/study/6091</a>]. Data is a combination of records from a few cores - raw data file and site have all relavent metadata. Temperature data found <a href="https://www.ncdc.noaa.gov/paleo-search/study/6080">here</a>. Temperature value is relative to the average over the past 1000 years.</p>
+<p>Data is from Antarctic ice cores and can be accessed via <a href="https://cdiac.ess-dive.lbl.gov/trends/co2/ice_core_co2.html">CDIAC</a> which will take you to the <a href="https://www.ncdc.noaa.gov/data-access/paleoclimatology-data/datasets/ice-core">NOAA Ice Core data site</a>. CO2 data recovered from this (data page)[<a href="https://www.ncdc.noaa.gov/paleo-search/study/6091" class="uri">https://www.ncdc.noaa.gov/paleo-search/study/6091</a>]. Data is a combination of records from a few cores - raw data file and site have all relevant metadata. Temperature data found <a href="https://www.ncdc.noaa.gov/paleo-search/study/6080">here</a>. Temperature value is relative to the average over the past 1000 years.</p>
 <ul>
 <li><a href="../../climatedata/csv/paleo_co2.csv">CO2 Paleo Record CSV</a></li>
 <li><a href="../../climatedata/csv/paleo_temp.csv">Temp Paleo Record CSV</a></li>
 <li><a href="../../climatedata/raw/edc-co2-2008.txt">CO2 Paleo Record RAW</a></li>
 <li><a href="../../climatedata/raw/edc3deuttemp2007.txt">Temp Paleo Record RAW</a></li>
 </ul>
+<div id="fields-2" class="section level3">
+<h3>Fields</h3>
+<p>CO2
+- time: Time before 2008 in years
+- co2: Carbon dioxide concentration in parts per million</p>
+<p>Temp
+- time: Time before year 1950
+- deut: Deuterum Data
+- temp: Temperature estimate in degrees C difference from average of past 1000 years</p>
+</div>
+<div id="questions-to-ponder-2" class="section level3">
+<h3>Questions to ponder</h3>
 <blockquote>
-<p>Can you combine the records below and show how they co-vary?</p>
+<p>Can you combine the records and show how they co-vary?</p>
 </blockquote>
 <blockquote>
 <p>Can you add them to the modern record?</p>
@@ -92,22 +126,58 @@ draft: true
 <p>Can you find data for the earths orbital parameters (maybe <a href="https://biocycle.atmos.colostate.edu/shiny/Milankovitch/">here</a>)?</p>
 </blockquote>
 </div>
-<div id="surface-temperature" class="section level1">
-<h1>Surface Temperature</h1>
-<p>Data is temperature anomalies compiled by NASA and available on their <a href="https://data.giss.nasa.gov/gistemp/">website</a>. Also some good <a href="https://data.giss.nasa.gov/gistemp/faq/abs_temp.html">FAQs</a> about how this is calculated. These anomalies are calculated relative to the baseline period 1951 – 1980.</p>
+</div>
+<div id="upper-ocean-temperature" class="section level1">
+<h1>Upper Ocean Temperature</h1>
+<p>Data is from <a href="https://www.nodc.noaa.gov/OC5/3M_HEAT_CONTENT/basin_avt_data.html">NOAA</a>. It is the yearly average of upper 100 m ocean temperature for the various ocean basins and globally.</p>
 <ul>
-<li><a href="../../climatedata/csv/nasa_surftemp.csv">Air surface temperature anomaly CSV</a></li>
-<li><a href="../../climatedata/raw/climate_raw/surftemp_NASA.csv">Air surface temp raw RAW</a></li>
+<li><a href="../../climatedata/csv/ocean_temp.csv">Upper-ocean temperatures CSV</a></li>
+<li><a href="../../climatedata/raw/T-dC-w0-100m.dat">Upper-ocean temperatures RAW</a></li>
 </ul>
+<div id="fields-3" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>time: Time in years</li>
+<li>WO: Temperature anomaly in degrees C for the world’s oceans</li>
+<li>WOse: Standard error in the Temperature anomaly</li>
+<li>NH, NHse, SH, SHse: Temperature anomalies and standard errors for Northern and Southern hemispheres.</li>
+</ul>
+</div>
+<div id="questions-to-ponder-3" class="section level3">
+<h3>Questions to ponder</h3>
 <blockquote>
-<p>What do we understand by “temperature anomaly”?</p>
+<p>How do the NH and SH compare?</p>
 </blockquote>
 <blockquote>
-<p>Can you join this record up with the paleo record?</p>
+<p>Can you download and bring in data from other depths?</p>
+</blockquote>
+</div>
+</div>
+<div id="sea-ice" class="section level1">
+<h1>Sea Ice</h1>
+<p>Data is from <a href="https://nsidc.org/arcticseaicenews/sea-ice-tools/">NSIDC</a> in excel format.</p>
+<ul>
+<li><a href="../../climatedata/csv/sea_ice_extent.csv">Sea ice record CSV</a></li>
+<li><a href="../../climatedata/raw/Sea_Ice_Index_Daily_Extent_G02135_v3.0.xlsx">Sea ice record RAW</a></li>
+</ul>
+<div id="fields-4" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>dttm: Date and time of the measurement</li>
+<li>month: Month</li>
+<li>year: Year</li>
+<li>extent: Sea Ice Extent in millions of square kilometers</li>
+</ul>
+</div>
+<div id="questions-to-ponder-4" class="section level3">
+<h3>Questions to Ponder</h3>
+<blockquote>
+<p>How best to show such a seasonally varying signal and the changes?</p>
 </blockquote>
 <blockquote>
-<p>How best to indicate the baseline period?</p>
+<p>Can you plot the trend lines for different seasons?</p>
 </blockquote>
+</div>
 </div>
 <div id="ocean-acidification" class="section level1">
 <h1>Ocean Acidification</h1>
@@ -116,51 +186,89 @@ draft: true
 <li><a href="../../climatedata/csv/surface_co2.csv">Surface Carb Chem HOTS CSV</a></li>
 <li><a href="../../climatedata/raw/climate_raw/HOT_surface_CO2.txt">Surface Carb Chem HOTS RAW</a></li>
 </ul>
+<div id="fields-5" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>dttm: Date and time of record</li>
+<li>DIC: Dissolved inorganic carbon in micromoles per kilogram</li>
+<li>TA: Total Alkalinity in micromoles per kilogram<br />
+</li>
+<li>pHcalc_insitu: In situ pH</li>
+<li>CO2calc_insitu: Partial pressure of CO2 in the ocean in ppm</li>
+</ul>
+</div>
+<div id="questions-to-ponder-5" class="section level3">
+<h3>Questions to ponder</h3>
 <blockquote>
 <p>What is the trend in pH?</p>
 </blockquote>
 <blockquote>
-<p>How do we make sense of all the variables we can plot?</p>
+<p>How do we compare mulitple variables?</p>
 </blockquote>
 <blockquote>
-<p>Can we incorporate the Mauna Loa data into our plots?</p>
+<p>Can we incorporate the Mauna Loa atmospheric CO2 data into our plots?</p>
 </blockquote>
+</div>
+</div>
+<div id="ice-mass-balance" class="section level1">
+<h1>Ice Mass Balance</h1>
+<p>Data is from <a href="http://imbie.org/data-downloads/">IMBIE</a>, which has annual mass loss from both Greenland and Antarctica to 2012 in one combined excel workbook. They also have a more updated Antarctic estimate and, coming soon, an updated Greenland one. Here, I include the combined data set.</p>
+<ul>
+<li><a href="../../climatedata/csv/greenland_MB.csv">Icesheet mass balance Greenland CSV</a></li>
+<li><a href="../../climatedata/csv/antarctica_MB.csv">Icesheet mass balance Antarctica CSV</a></li>
+<li><a href="../../climatedata/raw/imbie_dataset-2012_11_29.xlsx">Icesheet mass balance RAW</a></li>
+</ul>
+<div id="fields-6" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>time: Decimal year</li>
+<li>ice_change: Change in ice mass in gigatonnes</li>
+<li>ice_change_err: uncertainty in change<br />
+</li>
+<li>sea_level_change: contribution to sea level in mm</li>
+<li>sea_level_change_err: uncertainty in the sea level contribution</li>
+</ul>
+</div>
+<div id="questions-to-ponder-6" class="section level3">
+<h3>Questions to ponder</h3>
+<blockquote>
+<p>How do the icesheets compare?</p>
+</blockquote>
+<blockquote>
+<p>How significant are the losses compared to the total mass?</p>
+</blockquote>
+<blockquote>
+<p>How much are they contributing to current sea level rise?</p>
+</blockquote>
+</div>
 </div>
 <div id="sea-level-rise" class="section level1">
 <h1>Sea Level Rise</h1>
-<p>Data is from <a href="https://www.cmar.csiro.au/sealevel/sl_data_cmar.html">CSIRO</a> and includes both modern altimeter data and past reconstrutions of sea level rise.</p>
+<p>Data is from <a href="https://www.cmar.csiro.au/sealevel/sl_data_cmar.html">CSIRO</a> and includes both modern altimeter data and past reconstructions of sea level rise.</p>
 <ul>
 <li><a href="../../climatedata/csv/gmsl.csv">Sea Level Rise CSV</a></li>
 <li><a href="../../climatedata/raw/CSIRO_Recons_gmsl_mo_2015.csv">Sea level Rise (recon) RAW</a></li>
 <li><a href="../../climatedata/raw/CSIRO_ALT_gmsl_mo_2015.csv">Sea level Rise (alti) RAW</a></li>
 </ul>
+<div id="fields-7" class="section level3">
+<h3>Fields</h3>
+<ul>
+<li>time: Decimal years</li>
+<li>sea_level_alt: Altimeter sea level in mm relative to 0 mm at 1990.</li>
+<li>sea_level_rec: Reconstructed sea level in mm relative to 0 mm at 1990.</li>
+<li>sea_level_rec_err: 1 std err in reconstructed sea level</li>
+</ul>
+</div>
+<div id="questions" class="section level3">
+<h3>Questions</h3>
 <blockquote>
 <p>How were these two datasets compiled?</p>
 </blockquote>
 <blockquote>
 <p>How well do they agree?</p>
 </blockquote>
-</div>
-<div id="upper-ocean-temperature" class="section level1">
-<h1>Upper Ocean Temperature</h1>
-<p>Data is from <a href="https://www.nodc.noaa.gov/OC5/3M_HEAT_CONTENT/basin_avt_data.html">NOAA</a>. It is the three-monthly average of upper 100 m ocean temperature for the vaious ocean basins and globally.</p>
-<ul>
-<li><a href="../../climatedata/csv/ocean_temp.csv">Upper-ocean temperatures CSV</a></li>
-<li><a href="../../climatedata/raw/T-dC-w0-100m.dat">Upper-ocean temperatures RAW</a></li>
-</ul>
 <blockquote>
-<p>How do the oceans compare?</p>
-</blockquote>
-<blockquote>
-<p>Can you download and bring in data from other depths?</p>
+<p>What is having the major impact on sea levels?</p>
 </blockquote>
 </div>
-<div id="ice-mass-balance" class="section level1">
-<h1>Ice Mass Balance</h1>
-<p>Data is from <a href="http://imbie.org/data-downloads/">IMBIE</a>, which has annual mass loss from both Greenland and Antarctica to 2012 in one combined excel workbook. They also have a more updated Antarctic extimate and, coming soon, and update Greenland one. Here, I include the combined data set.</p>
-<ul>
-<li><a href="../../climatedata/csv/greenland_MB.csv">Icesheet mass balance Greenland CSV</a></li>
-<li><a href="../../climatedata/csv/antarctica_MB.csv">Icesheet mass balance Antarctica CSV</a></li>
-<li><a href="../../climatedata/raw/imbie_dataset-2012_11_29.xlsx">Icesheet mass balance RAW</a></li>
-</ul>
 </div>

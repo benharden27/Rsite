@@ -4,7 +4,7 @@ weight: 5
 output:
   blogdown::html_page:
     toc: true
-draft: true
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -34,9 +34,9 @@ for (file in files) {
 
 Below are links to some preformatted data set related to the presentations you gave last Friday about our changing climate. I have taken the raw data files and made them neat for plotting. If you feel confident with the plotting you should try and work up the data from the raw version.
 
-Your job today is to pick a data set, load it in, and explore the data and ways you might be able to plot it that would make sense. Think about what we've covered so far in terms of creating geoms, formatting plots and playing around with presentation.
+You should find your assigned data and then work to read it in and experiment with ways you might be able to plot it that would make sense. Think about what we've covered so far in terms of creating geoms, formatting plots, and playing around with aesthetic presentation.
 
-In the next few days, you will build the context around these plots and create a presentation of the data and it's context.
+Be sure to check out all relevant metadata from the linked sites to ensure you fully understand the data you are working with.
 
 **Note on wrangling**
 
@@ -49,51 +49,27 @@ If you feel like you would enjoy the challenge of working up the data from the r
 - `gather()` function can take data spread over multiple columns and bring it into one place. This is especially useful if your data is organized with year on the row names and months in the columns.
 - `readxl` package has a `read_excel()` function for reading in Excel datasheets
 
-# Atmospheric CO2
+# Atmospheric CO2 (recent)
 
-I got the Mauna loa data set from the [Keeling group page](http://scrippsco2.ucsd.edu/data/atmospheric_co2/), but you can also get it from [NOAA](https://www.esrl.noaa.gov/gmd/ccgg/trends/data.html). The Keeling group page also has data sets from other stations, but note that this data would need to be wrangled into the right format for plotting. 
+I got the Mauna Loa data set from the [Keeling group page](http://scrippsco2.ucsd.edu/data/atmospheric_co2/), but you can also get it from [NOAA](https://www.esrl.noaa.gov/gmd/ccgg/trends/data.html). The Keeling group page also has data sets from other stations, but note that this data would need to be wrangled into the right format for plotting. Here, I've got the Mauna Loa and Bering Head data sets.
 
 - [Mauna Loa CO2 CSV](../../climatedata/csv/CO2_mauna_loa.csv)
 - [Bering Head CO2 CSV](../../climatedata/csv/CO2_bering_head.csv)
 - [Mauna Loa CO2 RAW](../../climatedata/raw/monthly_in_situ_co2_mlo.csv)
 - [Bering Head CO2 RAW](../../climatedata/raw/monthly_flask_co2_nzd.csv)
 
-> How is it best to plot Atmospheric CO2 changes?
+### Fields
+
+- time: Time in decimal years
+- co2: Carbon Dioxide Concentration in parts per million
+
+### Questions to Ponder
+
+> How is it best to plot Atmospheric CO_2_ changes?
 
 > Can you plot multiple records on the same plot?
 
 > Can you add this data onto the CO2 record from paleo?
-
-# Sea Ice
-
-Data is from [NSIDC](https://nsidc.org/arcticseaicenews/sea-ice-tools/) in excel format. 
-
-- [Sea ice record CSV](../../climatedata/csv/sea_ice_extent.csv)
-- [Sea ice record RAW](../../climatedata/raw/Sea_Ice_Index_Daily_Extent_G02135_v3.0.xlsx)
-
-> How best to show such a seasonally varying signal and the changes?
-
-> Can you plot the trend lines for different seasons?
-
-> How can you measure the magnitude of the changes?
-
-# Paleo Records
-
-Data is from Antarctic ice cores and can be accessed via [CDIAC](https://cdiac.ess-dive.lbl.gov/trends/co2/ice_core_co2.html) which will take you to the [NOAA Ice Core data site](https://www.ncdc.noaa.gov/data-access/paleoclimatology-data/datasets/ice-core). CO2 data recovered from this (data page)[https://www.ncdc.noaa.gov/paleo-search/study/6091]. Data is a combination of records from a few cores - raw data file and site have all relavent metadata. Temperature data found [here](https://www.ncdc.noaa.gov/paleo-search/study/6080). Temperature value is relative to the average over the past 1000 years.
-
-- [CO2 Paleo Record CSV](../../climatedata/csv/paleo_co2.csv)
-- [Temp Paleo Record CSV](../../climatedata/csv/paleo_temp.csv)
-- [CO2 Paleo Record RAW](../../climatedata/raw/edc-co2-2008.txt)
-- [Temp Paleo Record RAW](../../climatedata/raw/edc3deuttemp2007.txt)
-
-> Can you combine the records below and show how they co-vary?
-
-> Can you add them to the modern record?
-
-> How best to indicate and explain the patterns you see?
-
-> Can you find data for the earths orbital parameters (maybe [here](https://biocycle.atmos.colostate.edu/shiny/Milankovitch/))?
-
 
 # Surface Temperature
 
@@ -102,11 +78,91 @@ Data is temperature anomalies compiled by NASA and available on their [website](
 - [Air surface temperature anomaly CSV](../../climatedata/csv/nasa_surftemp.csv)
 - [Air surface temp raw RAW](../../climatedata/raw/climate_raw/surftemp_NASA.csv)
 
+### Fields
+
+- time: Time in decimal years
+- year: Integer year
+- month: Month of year
+- temp: Temperature anomaly in degrees C compared to average of 1951 -- 1980.
+
+### Questions to Ponder
+
 > What do we understand by "temperature anomaly"?
 
 > Can you join this record up with the paleo record?
 
 > How best to indicate the baseline period?
+
+
+# Paleo Records
+
+Data is from Antarctic ice cores and can be accessed via [CDIAC](https://cdiac.ess-dive.lbl.gov/trends/co2/ice_core_co2.html) which will take you to the [NOAA Ice Core data site](https://www.ncdc.noaa.gov/data-access/paleoclimatology-data/datasets/ice-core). CO2 data recovered from this (data page)[https://www.ncdc.noaa.gov/paleo-search/study/6091]. Data is a combination of records from a few cores - raw data file and site have all relevant metadata. Temperature data found [here](https://www.ncdc.noaa.gov/paleo-search/study/6080). Temperature value is relative to the average over the past 1000 years.
+
+- [CO2 Paleo Record CSV](../../climatedata/csv/paleo_co2.csv)
+- [Temp Paleo Record CSV](../../climatedata/csv/paleo_temp.csv)
+- [CO2 Paleo Record RAW](../../climatedata/raw/edc-co2-2008.txt)
+- [Temp Paleo Record RAW](../../climatedata/raw/edc3deuttemp2007.txt)
+
+### Fields
+
+CO2
+- time: Time before 2008 in years
+- co2: Carbon dioxide concentration in parts per million
+
+Temp
+- time: Time before year 1950
+- deut: Deuterum Data
+- temp: Temperature estimate in degrees C difference from average of past 1000 years
+
+### Questions to ponder
+
+> Can you combine the records and show how they co-vary?
+
+> Can you add them to the modern record?
+
+> How best to indicate and explain the patterns you see?
+
+> Can you find data for the earths orbital parameters (maybe [here](https://biocycle.atmos.colostate.edu/shiny/Milankovitch/))?
+
+#  Upper Ocean Temperature
+
+Data is from [NOAA](https://www.nodc.noaa.gov/OC5/3M_HEAT_CONTENT/basin_avt_data.html). It is the yearly average of upper 100 m ocean temperature for the various ocean basins and globally. 
+
+- [Upper-ocean temperatures CSV](../../climatedata/csv/ocean_temp.csv)
+- [Upper-ocean temperatures RAW](../../climatedata/raw/T-dC-w0-100m.dat)
+
+### Fields
+
+- time: Time in years
+- WO: Temperature anomaly in degrees C for the world's oceans
+- WOse: Standard error in the Temperature anomaly
+- NH, NHse, SH, SHse: Temperature anomalies and standard errors for Northern and Southern hemispheres.
+
+### Questions to ponder 
+
+> How do the NH and SH compare?
+
+> Can you download and bring in data from other depths?
+
+# Sea Ice
+
+Data is from [NSIDC](https://nsidc.org/arcticseaicenews/sea-ice-tools/) in excel format. 
+
+- [Sea ice record CSV](../../climatedata/csv/sea_ice_extent.csv)
+- [Sea ice record RAW](../../climatedata/raw/Sea_Ice_Index_Daily_Extent_G02135_v3.0.xlsx)
+
+### Fields
+
+- dttm: Date and time of the measurement
+- month: Month
+- year: Year
+- extent: Sea Ice Extent in millions of square kilometers
+
+### Questions to Ponder
+
+> How best to show such a seasonally varying signal and the changes?
+
+> Can you plot the trend lines for different seasons?
 
 
 # Ocean Acidification
@@ -116,39 +172,68 @@ pH and carbonate chem data can be accessed from either the [BATS data site](http
 - [Surface Carb Chem HOTS CSV](../../climatedata/csv/surface_co2.csv)
 - [Surface Carb Chem HOTS RAW](../../climatedata/raw/climate_raw/HOT_surface_CO2.txt)
 
+### Fields
+
+- dttm: Date and time of record
+- DIC: Dissolved inorganic carbon in micromoles per kilogram
+- TA: Total Alkalinity in micromoles per kilogram   
+- pHcalc_insitu: In situ pH
+- CO2calc_insitu: Partial pressure of CO2 in the ocean in ppm
+
+### Questions to ponder
+
 > What is the trend in pH?
 
-> How do we make sense of all the variables we can plot?
+> How do we compare mulitple variables?
 
-> Can we incorporate the Mauna Loa data into our plots?
+> Can we incorporate the Mauna Loa atmospheric CO2 data into our plots?
+
+
+# Ice Mass Balance
+
+Data is from [IMBIE](http://imbie.org/data-downloads/), which has annual mass loss from both Greenland and Antarctica to 2012 in one combined excel workbook. They also have a more updated Antarctic estimate and, coming soon, an updated Greenland one. Here, I include the combined data set.
+
+- [Icesheet mass balance Greenland CSV](../../climatedata/csv/greenland_MB.csv)
+- [Icesheet mass balance Antarctica CSV](../../climatedata/csv/antarctica_MB.csv)
+- [Icesheet mass balance RAW](../../climatedata/raw/imbie_dataset-2012_11_29.xlsx)
+
+### Fields
+
+- time: Decimal year
+- ice_change: Change in ice mass in gigatonnes
+- ice_change_err: uncertainty in change  
+- sea_level_change: contribution to sea level in mm
+- sea_level_change_err: uncertainty in the sea level contribution
+
+### Questions to ponder
+
+> How do the icesheets compare?
+
+> How significant are the losses compared to the total mass?
+
+> How much are they contributing to current sea level rise?
 
 # Sea Level Rise
 
-Data is from [CSIRO](https://www.cmar.csiro.au/sealevel/sl_data_cmar.html) and includes both modern altimeter data and past reconstrutions of sea level rise.
+Data is from [CSIRO](https://www.cmar.csiro.au/sealevel/sl_data_cmar.html) and includes both modern altimeter data and past reconstructions of sea level rise.
 
 - [Sea Level Rise CSV](../../climatedata/csv/gmsl.csv)
 - [Sea level Rise (recon) RAW](../../climatedata/raw/CSIRO_Recons_gmsl_mo_2015.csv)
 - [Sea level Rise (alti) RAW](../../climatedata/raw/CSIRO_ALT_gmsl_mo_2015.csv)
 
-> How were these two datasets compiled?
+### Fields
 
+- time: Decimal years
+- sea_level_alt: Altimeter sea level in mm relative to 0 mm at 1990.
+- sea_level_rec: Reconstructed sea level in mm relative to 0 mm at 1990.
+- sea_level_rec_err: 1 std err in reconstructed sea level
+
+### Questions
+
+> How were these two datasets compiled?
+ 
 > How well do they agree?
 
-# Upper Ocean Temperature
+> What is having the major impact on sea levels?
 
-Data is from [NOAA](https://www.nodc.noaa.gov/OC5/3M_HEAT_CONTENT/basin_avt_data.html). It is the three-monthly average of upper 100 m ocean temperature for the vaious ocean basins and globally. 
 
-- [Upper-ocean temperatures CSV](../../climatedata/csv/ocean_temp.csv)
-- [Upper-ocean temperatures RAW](../../climatedata/raw/T-dC-w0-100m.dat)
-
-> How do the oceans compare?
-
-> Can you download and bring in data from other depths?
-
-# Ice Mass Balance
-
-Data is from [IMBIE](http://imbie.org/data-downloads/), which has annual mass loss from both Greenland and Antarctica to 2012 in one combined excel workbook. They also have a more updated Antarctic extimate and, coming soon, and update Greenland one. Here, I include the combined data set.
-
-- [Icesheet mass balance Greenland CSV](../../climatedata/csv/greenland_MB.csv)
-- [Icesheet mass balance Antarctica CSV](../../climatedata/csv/antarctica_MB.csv)
-- [Icesheet mass balance RAW](../../climatedata/raw/imbie_dataset-2012_11_29.xlsx)
