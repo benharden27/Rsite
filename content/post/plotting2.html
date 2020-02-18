@@ -23,7 +23,7 @@ library(readr)</code></pre>
 <p>Just like last class, you are going to read in the data using the <code>read_csv()</code> function. You need to go get the data from the top of this page and save it somewhere sensible on your computer. As before, this is a comma-separated-file that you can check out in Excel if that is more comfortable for you.</p>
 <p>On my computer, the read function looks like this:</p>
 <pre class="r"><code>df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_surfsamp.csv&quot;)</code></pre>
-<p>As before, you will need to replace the path I have given with the path on your computer.</p>
+<p>As before, you will need to replace the path I have given with the path on your computer. Use the tab key to auto-fill one folder at a time.</p>
 </div>
 <div id="initial-look-at-the-data" class="section level2">
 <h2>Initial look at the data</h2>
@@ -115,12 +115,12 @@ library(readr)</code></pre>
 <p>I’m just going to run through some of the key parts of the homework chapter now to see how we apply those concepts to our data set to take control over the appearance. There are a million different things you could do and the best way to find out new ways to do things is to think of something you’d like to do and then find a solution online to how to do it. That said, here are a few ideas of typical changes you might want to make.</p>
 <div id="lines-and-points" class="section level3">
 <h3>Lines and Points</h3>
-<p>You can change the colors of you plot when you define the geom. All you have do do is declare the color, size, etc. outside of the <code>aes()</code> function. That way you are saying that you want the geom to have that property universally rather than mapping a variable to that aesthetic.</p>
+<p>You can change the colors of you plot when you define the geom. All you have do do is declare the color, size, etc. outside of the <code>aes()</code> function. That way you are saying that you want the geom to have that property universally rather than mapping a variable to an aesthetic.</p>
 <pre class="r"><code>ggplot(df, aes(dttm, temp)) +
   geom_point(color = &quot;red&quot;, size = 10, shape = 5) +
   geom_smooth(color = &quot;black&quot;)</code></pre>
 <p><img src="/post/plotting2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Color can also be specified in the RGB format “#RRGGBBAA”. See the color brewer page for more info on that. Below is an example of some of the stuff you can change for a line.</p>
+<p>Color can also be specified in the RGB format “#RRGGBBAA”. See the (colorbrewer)[<a href="http://colorbrewer2.org" class="uri">http://colorbrewer2.org</a>] page for more info on that. Below is an example of some of the stuff you can change for a line.</p>
 <pre class="r"><code>ggplot(df, aes(dttm, temp)) +
   geom_line(color = &quot;#2ca25f&quot;, size = 3, linetype = &quot;dashed&quot;, lineend = &quot;round&quot;, linejoin = &quot;mitre&quot;)</code></pre>
 <p><img src="/post/plotting2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
@@ -128,18 +128,32 @@ library(readr)</code></pre>
 </div>
 <div id="labels" class="section level3">
 <h3>Labels</h3>
-<p>Right now, ggplot automatically labels the axis and color/size scales you draw with the names of the variables as they appear in the data frame. It is likely that you’ll want to change that and you can use the <code>labs</code> function to do that - you just add it on like you would a geom. In the following example, I’ve also added salinity as color aesthetic and assigned the plot to a variable to reuse later:</p>
+<p>You can add labels directly to the text using <code>geom_text()</code> (for boxless labels) or <code>geom_label()</code> (for labels with opaque backgrounds). You will need to provide an x and y coordinate for the label. For time on one of your axes, you will need to create a datetime object using the <code>lubridate</code> package. There are a bunch of useful functions in this package including <code>ymd()</code> to create a date object from a pice of text or <code>ymd_h()</code> (among others) to create a datetime object. This is what we use below. Note, th</p>
+<pre class="r"><code># Use the lubridate package
+library(lubridate)
+
+# Create a datetime object
+tloc &lt;- ymd_h(&quot;2015-04-01 0&quot;)
+
+# create plot
+ggplot(df, aes(dttm, temp)) +
+  geom_point(aes(color = sal), size = 3) +
+  geom_text(aes(tloc, 15, label = &quot;Temperature increases over time&quot;))</code></pre>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>The text is placed as a default with its center at the specified x location. You can change this as can you change everything else about the font, from size to the font family.</p>
+<p>In addition to custom labels, ggplot automatically labels the axis and color/size scales you draw with the names of the variables as they appear in the data frame. It is likely that you’ll want to change that and you can use the <code>labs</code> function to do that - you just add it on like you would a geom. In the following example, I’ve also added salinity as color aesthetic and assigned the plot to a variable to reuse later:</p>
 <pre class="r"><code>g &lt;- ggplot(df, aes(dttm, temp, color = sal)) +
        geom_point(size = 3) +
        labs(title = &quot;Temperature verses time colored by salinity&quot;,
             x = &quot;Time&quot;,
-            y = &quot;Temperature&quot;,
+            y = &quot;Temperature (°C)&quot;,
             color = &quot;Salinity&quot;)
 g</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="scaling" class="section level3">
 <h3>Scaling</h3>
+<p>So far we have been specifying changes to our plot at the geom level; we have been able to change how the geom is displayed, the size, the fill, the color, etc. The next thing we will do will be changes to the plot more broadly.</p>
 <p>You can change the color scales on your plots using functions in ggplot starting with <code>scale_color_*</code>. Some good options include:</p>
 <ul>
 <li><p>Use one of the built-in color scale tools such as <code>scale_color_gradient()</code> which creates a gradient between two colors or <code>scale_color_gradient2()</code> which creates a color map between three colors</p></li>
@@ -147,34 +161,34 @@ g</code></pre>
 </ul>
 <pre class="r"><code>g + 
   scale_color_distiller(palette = &quot;GnBu&quot;)</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <ul>
 <li>the <code>viridis</code> package is designed specifically for continuous data.</li>
 </ul>
 <pre class="r"><code>library(viridis)
 g +
   scale_color_viridis()</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <ul>
 <li>the <code>oce</code> package has some typical scales used throughout oceanography</li>
 </ul>
 <pre class="r"><code>library(oce)
 g +
-  scale_color_gradientn(colors = oceColorsTemperature(100))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>You can also change the number of breaks and labels as well (NB: the following example is silly, but shows that you can replace labels with anything that you like as long as your labels vector is the same length as your breaks vector).</p>
+  scale_color_gradientn(colors = oceColorsSalinity(100))</code></pre>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>You can also change the number of breaks and labels in your colorscaling as well (NB: the following example is silly, but shows that you can replace labels with anything that you like as long as your labels vector is the same length as your breaks vector).</p>
 <pre class="r"><code>g +
   scale_color_viridis(breaks = seq(33.5,35.5,.5), labels = c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>To that end, you can also create custom tick breaks for the x and y axes too:</p>
 <pre class="r"><code>g +
   scale_y_continuous(breaks = c(16,17,20,21,25))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>You can also curtail your color axis like you might an x and y axis</p>
 <pre class="r"><code>g + 
   scale_color_viridis(limits = c(35,35.5))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>You can see in this example that all values outside of this range have become gray as they no longer exist in our limits</p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>You can see in this example that all values outside of this range have become gray as they no longer exist in our limits. If you want to remove them altogether, you will need to filter them out of the data before you plot.</p>
 </div>
 </div>
 <div id="zooming" class="section level2">
@@ -182,16 +196,16 @@ g +
 <p>As we spoke about last week, you can either zoom within one of the <code>scale_</code> functions or within a <code>coord_</code> function. The former cuts the data out of the data set, the latter just zooms us in on a region. In most cases, you are going to want to use <code>coord_cartesian()</code> to zoom in on some part of the plot. This zooms without destroying data outside of your range which can be important for things like boxplots and smoothing lines. NB you can also use the functions <code>xlim()</code> and <code>ylim()</code> as shorthand too.</p>
 <pre class="r"><code>g + 
   coord_cartesian(ylim = c(20,24))</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>You can also use a different coordinate system - one we are likely to want sometime soon is <code>coord_quickmap()</code> which formats lon and lat to be well proportioned. More in a week or so!</p>
 </div>
 <div id="themes" class="section level2">
 <h2>Themes</h2>
-<p>You can change just about anything you want about the look of your figure in the <code>theme()</code> function. Before you go to far into that though, ggplot provides some good basic themes to help you out. These are typically applied at the end of the call to ggplot:</p>
+<p>You can change just about anything you want about the look of your figure in the <code>theme()</code> function. Before we go too far into that though, ggplot provides some good basic themes to help you out. These are typically applied at the end of the call to ggplot:</p>
 <pre class="r"><code>g +
   theme_light()</code></pre>
-<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<p>You can also specify individual aspects of you theme using the <code>theme()</code> function. Check out the help file to see how that works and what you can change.</p>
+<p><img src="/post/plotting2_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>You can also specify individual aspects of you theme using the <code>theme()</code> function. We will be talking more about that next time.</p>
 </div>
 <div id="next-steps-practice" class="section level2">
 <h2>Next steps / Practice</h2>

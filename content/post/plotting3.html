@@ -1,0 +1,99 @@
+---
+title: Plotting III - Themes
+weight: 6
+draft: true
+---
+
+
+
+<p>The data for this exercise is available <a href="../../data_raw/S258_hourly.csv">here</a></p>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>To complete the exercises contained below, you will need to load the group of packages in the <code>tidyverse</code> and also the <code>lubridate</code> package:</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)</code></pre>
+</div>
+<div id="reading-in-the-data" class="section level2">
+<h2>Reading in the data</h2>
+<p>I’m going to be using the hourly data from S258. This is the hour-by-hour record from our underway sensors. On my computer, loading that data looks like this</p>
+<pre class="r"><code>df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv&quot;)</code></pre>
+<ul>
+<li>The columns are:
+<ul>
+<li>dttm: Date and time</li>
+<li>lon: Longitude (decimal degrees east of 0)</li>
+<li>lat: Latitude (decimal degrees north of 0)</li>
+<li>temp: Surface temperature (<sup>o</sup>C)</li>
+<li>sal: Surface salinity (PSU)</li>
+<li>fluor: Surface fluorescence (Volts - a measure of chlorophyll-a concentration)</li>
+<li>wind_sp: Wind speed in m/s</li>
+<li>wind_dir: Wind direction in degrees from North</li>
+</ul></li>
+</ul>
+</div>
+<div id="initial-plot" class="section level2">
+<h2>Initial plot</h2>
+<p>A first ggplot of this data might look something like:</p>
+<pre class="r"><code>ggplot(df) +
+  geom_line(aes(dttm, temp))</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>This is much more data than in the previous classes - one of the things that immediately stands-out are the periods with straight lines in early April and late April. The data did not do this between these points, they are the periods that the ship was in port. The way the data was collected, there are no gaps between when they arrived and when they redeparted. Options we have here are either to plot the data with points.</p>
+<pre class="r"><code>ggplot(df) +
+  geom_point(aes(dttm, temp))</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>But this can look a little overswhelming. We can instead edit the data a little to add in some blank data in our port stops.</p>
+<pre class="r"><code># All this does is add in two new rows to the data in early and late April. The way add_row works, this adds in NA for all fields not specified.
+df &lt;- add_row(df, dttm = c(ymd_h(&quot;2015-4-1 0&quot;,&quot;2015-4-26 0&quot;)))
+ggplot(df) +
+  geom_line(aes(dttm, temp))</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>We now have gaps during those port stops. When <code>geom_line()</code> encounters a NA in the data it doesn’t join up the lines to that point on either side, creating a gap in the line.</p>
+<p>This is an example of an initial data manipulation you might need to do to remove any ambiguities created by the way your data is arranged on the screen.</p>
+</div>
+<div id="themes" class="section level2">
+<h2>Themes</h2>
+<p>Our next goal is to modify the other elemetns of the plot: the background, the axis lines, the labels, anything that is not actually representing data.</p>
+<p>We will start by doing some things we are already familiar with to create a base plot for aesthetic modification.</p>
+<pre class="r"><code>g &lt;- ggplot(df) +
+  geom_line(aes(dttm, temp)) +
+  labs(x = NULL, y = &quot;Temperature (°C)&quot;) +
+  scale_x_datetime(date_labels = &quot;%b %d, %Y&quot;, date_breaks = &quot;7 day&quot;)
+g</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>The only new thing here is the <code>scale_x_datetime()</code> which works just like <code>scale_x_continuous()</code> but provides a few more tools for specifying dates more freely. The date_labels I’ve specified can be decoded in <code>?strftime</code> and the date_breaks is relatively self-explanatory. Check out <code>?scale_x_datetime</code> for more details.</p>
+<p>As we already discussed briefly, ggplot provides some theming options that will give your plot a different look, e.g.</p>
+<pre class="r"><code>g + theme_dark()</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>g + theme_minimal()</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<p>You can also get a bunch more themes from the ggthemes packages which you can install using `install.packages(“ggthemes”).</p>
+<pre class="r"><code>library(ggthemes)
+g + theme_economist()</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>g + theme_excel()</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>For complete control though, you should familirize yourself with the <code>theme()</code> function. This is the control center for how you plot looks. You can change just about any aspect of the plot from here. Check out <code>?theme()</code> for full details.</p>
+<p>Using <code>theme()</code> you can edit many aspects of the plot such as:</p>
+<ul>
+<li>the background color</li>
+<li>axis lines</li>
+<li>axis tick marks</li>
+<li>grid lines</li>
+<li>legend formatting</li>
+<li>fonts used throughout</li>
+<li>etc.</li>
+</ul>
+<p>Any time you edit one of these things you are editing (or creating) an object that is either a:</p>
+<ul>
+<li>rectangle (e.g. plot background)</li>
+<li>line (e.g. axis ticks, axis lines)</li>
+<li>text (e.g fonts)</li>
+</ul>
+<p>For each of these, ggplot provides a function that will create and edit these objects: <code>element_rect()</code>, <code>element_line()</code> and <code>element_text()</code>. There is also an <code>element_blank()</code> to remove an object. If you look through the properties of the plot that you can change (by <code>?theme</code>) you will see whick <code>element_*()</code> you need to specify. Looking at the help file for each element function will show you what parameters you can change.</p>
+<p>You can start with an edited theme then change from there. For our example, we’re going to start from our original object <code>g</code>. The things I’m going to do next aren’t necessarily good choices, but they will show how the <code>theme()</code> function works.</p>
+<p>First, set the background to white</p>
+<pre class="r"><code>g +
+  theme(panel.background = element_rect(fill = &quot;white&quot;))</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-9-1.png" width="50%" /></p>
+<p>I’m going to run through a few examples here starting from</p>
+</div>

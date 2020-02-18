@@ -42,7 +42,7 @@ On my computer, the read function looks like this:
 df <- read_csv("~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_surfsamp.csv")
 ```
 
-As before, you will need to replace the path I have given with the path on your computer.
+As before, you will need to replace the path I have given with the path on your computer. Use the tab key to auto-fill one folder at a time.
 
 ## Initial look at the data
 
@@ -103,7 +103,7 @@ I'm just going to run through some of the key parts of the homework chapter now 
 
 ### Lines and Points
 
-You can change the colors of you plot when you define the geom. All you have do do is declare the color, size, etc. outside of the `aes()` function. That way you are saying that you want the geom to have that property universally rather than mapping a variable to that aesthetic.
+You can change the colors of you plot when you define the geom. All you have do do is declare the color, size, etc. outside of the `aes()` function. That way you are saying that you want the geom to have that property universally rather than mapping a variable to an aesthetic.
 
 ```{r, include=TRUE}
 ggplot(df, aes(dttm, temp)) +
@@ -111,13 +111,12 @@ ggplot(df, aes(dttm, temp)) +
   geom_smooth(color = "black")
 ```
 
-Color can also be specified in the RGB format "#RRGGBBAA". See the color brewer page for more info on that. Below is an example of some of the stuff you can change for a line.
+Color can also be specified in the RGB format "#RRGGBBAA". See the (colorbrewer)[http://colorbrewer2.org] page for more info on that. Below is an example of some of the stuff you can change for a line.
 
 ```{r, include = TRUE}
 ggplot(df, aes(dttm, temp)) +
   geom_line(color = "#2ca25f", size = 3, linetype = "dashed", lineend = "round", linejoin = "mitre")
 ```
-
 
 You can check out all the aesthetics you can set in the ggplot vignette below.
 
@@ -127,19 +126,38 @@ vignette("ggplot2-specs")
 
 ### Labels
 
-Right now, ggplot automatically labels the axis and color/size scales you draw with the names of the variables as they appear in the data frame. It is likely that you'll want to change that and you can use the `labs` function to do that - you just add it on like you would a geom. In the following example, I've also added salinity as color aesthetic and assigned the plot to a variable to reuse later:
+You can add labels directly to the text using `geom_text()` (for boxless labels) or `geom_label()` (for labels with opaque backgrounds). You will need to provide an x and y coordinate for the label. For time on one of your axes, you will need to create a datetime object using the `lubridate` package. There are a bunch of useful functions in this package including `ymd()` to create a date object from a pice of text or `ymd_h()` (among others) to create a datetime object. This is what we use below. Note, th
+
+```{r, include = TRUE}
+# Use the lubridate package
+library(lubridate)
+
+# Create a datetime object
+tloc <- ymd_h("2015-04-01 0")
+
+# create plot
+ggplot(df, aes(dttm, temp)) +
+  geom_point(aes(color = sal), size = 3) +
+  geom_text(aes(tloc, 15, label = "Temperature increases over time"))
+```
+
+The text is placed as a default with its center at the specified x location. You can change this as can you change everything else about the font, from size to the font family.
+
+In addition to custom labels, ggplot automatically labels the axis and color/size scales you draw with the names of the variables as they appear in the data frame. It is likely that you'll want to change that and you can use the `labs` function to do that - you just add it on like you would a geom. In the following example, I've also added salinity as color aesthetic and assigned the plot to a variable to reuse later:
  
 ```{r, include= TRUE}
 g <- ggplot(df, aes(dttm, temp, color = sal)) +
        geom_point(size = 3) +
        labs(title = "Temperature verses time colored by salinity",
             x = "Time",
-            y = "Temperature",
+            y = "Temperature (°C)",
             color = "Salinity")
 g
 ```
 
 ### Scaling
+
+So far we have been specifying changes to our plot at the geom level; we have been able to change how the geom is displayed, the size, the fill, the color, etc. The next thing we will do will be changes to the plot more broadly.
 
 You can change the color scales on your plots using functions in ggplot starting with `scale_color_*`. Some good options include:
 
@@ -151,7 +169,6 @@ You can change the color scales on your plots using functions in ggplot starting
 g + 
   scale_color_distiller(palette = "GnBu")
 ```
-
 
 - the `viridis` package is designed specifically for continuous data.
 
@@ -166,10 +183,10 @@ g +
 ```{r, include = TRUE}
 library(oce)
 g +
-  scale_color_gradientn(colors = oceColorsTemperature(100))
+  scale_color_gradientn(colors = oceColorsSalinity(100))
 ```
 
-You can also change the number of breaks and labels as well (NB: the following example is silly, but shows that you can replace labels with anything that you like as long as your labels vector is the same length as your breaks vector). 
+You can also change the number of breaks and labels in your colorscaling as well (NB: the following example is silly, but shows that you can replace labels with anything that you like as long as your labels vector is the same length as your breaks vector). 
 
 ```{r, include = TRUE}
 g +
@@ -183,7 +200,6 @@ g +
   scale_y_continuous(breaks = c(16,17,20,21,25))
 ```
 
-
 You can also curtail your color axis like you might an x and y axis
 
 ```{r, include = TRUE}
@@ -191,7 +207,7 @@ g +
   scale_color_viridis(limits = c(35,35.5))
 ```
 
-You can see in this example that all values outside of this range have become gray as they no longer exist in our limits
+You can see in this example that all values outside of this range have become gray as they no longer exist in our limits. If you want to remove them altogether, you will need to filter them out of the data before you plot.
 
 ## Zooming
 
@@ -206,14 +222,14 @@ You can also use a different coordinate system - one we are likely to want somet
 
 ## Themes
 
-You can change just about anything you want about the look of your figure in the `theme()` function. Before you go to far into that though, ggplot provides some good basic themes to help you out. These are typically applied at the end of the call to ggplot:
+You can change just about anything you want about the look of your figure in the `theme()` function. Before we go too far into that though, ggplot provides some good basic themes to help you out. These are typically applied at the end of the call to ggplot:
 
 ```{r, include = TRUE}
 g +
   theme_light()
 ```
 
-You can also specify individual aspects of you theme using the `theme()` function. Check out the help file to see how that works and what you can change.
+You can also specify individual aspects of you theme using the `theme()` function. We will be talking more about that next time.
 
 ## Next steps / Practice
 

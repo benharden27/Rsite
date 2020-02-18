@@ -62,6 +62,18 @@ Prerequisites Before this class, you should have worked through chapter 28 of R 
     </item>
     
     <item>
+      <title>Plotting III - Themes</title>
+      <link>/rtopic/plotting-iii-themes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/plotting-iii-themes/</guid>
+      <description>The data for this exercise is available here
+Prerequisites To complete the exercises contained below, you will need to load the group of packages in the tidyverse and also the lubridate package:
+library(tidyverse) library(lubridate)  Reading in the data I’m going to be using the hourly data from S258. This is the hour-by-hour record from our underway sensors. On my computer, loading that data looks like this
+df &amp;lt;- read_csv(&amp;quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.</description>
+    </item>
+    
+    <item>
       <title>S285 Plots</title>
       <link>/rtopic/s285-plots/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
