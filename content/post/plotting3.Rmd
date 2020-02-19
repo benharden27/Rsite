@@ -1,7 +1,6 @@
 ---
 title: Plotting III - Themes
 weight: 6
-draft: true
 ---
 
 The data for this exercise is available [here](../../data_raw/S258_hourly.csv)
@@ -46,14 +45,14 @@ ggplot(df) +
   geom_line(aes(dttm, temp))
 ```
 
-This is much more data than in the previous classes - one of the things that immediately stands-out are the periods with straight lines in early April and late April. The data did not do this between these points, they are the periods that the ship was in port. The way the data was collected, there are no gaps between when they arrived and when they redeparted. Options we have here are either to plot the data with points.
+This is much more data than in the previous classes - one of the things that immediately stands-out are the periods with straight lines in early April and late April. The data did not do this between these points, they are the periods that the ship was in port. The way the data was collected, there are no gaps between when they arrived and when they departed. Options we have here are either to plot the data with points.
 
 ```{r, include = TRUE}
 ggplot(df) +
   geom_point(aes(dttm, temp))
 ```
 
-But this can look a little overswhelming. We can instead edit the data a little to add in some blank data in our port stops.
+But this can look a little overwhelming. We can instead edit the data a little to add in some blank data in our port stops.
 
 ```{r, include = TRUE}
 # All this does is add in two new rows to the data in early and late April. The way add_row works, this adds in NA for all fields not specified.
@@ -68,7 +67,7 @@ This is an example of an initial data manipulation you might need to do to remov
 
 ## Themes
 
-Our next goal is to modify the other elemetns of the plot: the background, the axis lines, the labels, anything that is not actually representing data.
+Our next goal is to modify the other elements of the plot: the background, the axis lines, the labels, anything that is not actually representing data.
 
 We will start by doing some things we are already familiar with to create a base plot for aesthetic modification.
 
@@ -91,13 +90,13 @@ g + theme_minimal()
 
 You can also get a bunch more themes from the ggthemes packages which you can install using `install.packages("ggthemes").
 
-```{r, include = TRUE}
+```{r, include = TRUE, out.width='50%', fig.align="center"}
 library(ggthemes)
 g + theme_economist()
 g + theme_excel()
 ```
 
-For complete control though, you should familirize yourself with the `theme()` function. This is the control center for how you plot looks. You can change just about any aspect of the plot from here. Check out `?theme()` for full details.
+For complete control though, you should familiarize yourself with the `theme()` function. This is the control center for how you plot looks. You can change just about any aspect of the plot from here. Check out `?theme()` for full details.
 
 Using `theme()` you can edit many aspects of the plot such as:
 
@@ -115,20 +114,127 @@ Any time you edit one of these things you are editing (or creating) an object th
 - line (e.g. axis ticks, axis lines)
 - text (e.g fonts)
 
-For each of these, ggplot provides a function that will create and edit these objects: `element_rect()`, `element_line()` and `element_text()`. There is also an `element_blank()` to remove an object. If you look through the properties of the plot that you can change (by `?theme`) you will see whick `element_*()` you need to specify. Looking at the help file for each element function will show you what parameters you can change.
+For each of these, ggplot provides a function that will create and edit these objects: `element_rect()`, `element_line()` and `element_text()`. There is also an `element_blank()` to remove an object. If you look through the properties of the plot that you can change (by `?theme`) you will see which `element_*()` you need to specify. Looking at the help file for each element function will show you what parameters you can change.
 
 You can start with an edited theme then change from there. For our example, we're going to start from our original object `g`. The things I'm going to do next aren't necessarily good choices, but they will show how the `theme()` function works.
 
-First, set the background to white
+As some examples, setting the background to white
 
-```{r, include = TRUE, out.width='50%'}
+```{r, include = TRUE, out.width='50%', fig.align="center"}
 g +
   theme(panel.background = element_rect(fill = "white"))
+```
 
+Setting the grid line colors and sizes background
+
+```{r, include = TRUE, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(size = .5, color = "grey"))
+```
+
+You can see that many of the default ggplot themes have thick major grids and thinner minor ones. I think this is clunky so tend to just remove them as a habit using `element_blank()`. I'm also making them a lighter grey.
+
+```{r, include = TRUE, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(size = .5, color = "grey90"),
+        panel.grid.minor = element_blank())
+```
+
+There's a weird transition now between the grid lines and the ticks. We can modify the ticks to either be grey or remove them entirely.
+
+```{r, include = TRUE, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(size = .5, color = "grey90"),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank())
+```
+
+Of course, if I wanted to remove the grid I would need to keep the ticks, but maybe make them the same color as the label text.
+
+```{r, include = TRUE, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        text = element_text(color = "grey30"),
+        axis.ticks = element_line(color = "grey30"))
+```
+
+Using `text =` defines this setting for all text on the figure. This is true also for `line =` and `rect =` to specify all line and all rectangle elements be the same format.
+
+On the other end of the scale, you can even be more specific about individual components; perhaps it might be best in out case to add back in light horizontal grid lines.
+
+```{r, include = TRUE, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90"),
+        text = element_text(color = "grey30"),
+        axis.ticks.x = element_line(color = "grey30"),
+        axis.ticks.y = element_blank())
+```
+
+You can get more and more specific with all the elements of you want to change. 
+
+## Exercises
+
+> Change the font size on the plot
+
+```{r, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90"),
+        text = element_text(color = "grey30", size = 18),
+        axis.ticks.x = element_line(color = "grey30"),
+        axis.ticks.y = element_blank())
 ```
 
 
-I'm going to run through a few examples here starting from 
+> Color the line by salinity then modify the legend to be along the bottom rather than the side. 
 
+```{r, out.width='50%', fig.align="center"}
+g <- ggplot(df) +
+  geom_line(aes(dttm, temp, color = sal)) +
+  labs(x = NULL, y = "Temperature (°C)", color = "Salinity") +
+  scale_x_datetime(date_labels = "%b %d, %Y", date_breaks = "7 day")
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90"),
+        text = element_text(color = "grey30"),
+        axis.ticks.x = element_line(color = "grey30"),
+        axis.ticks.y = element_blank(),
+        legend.position = "bottom")
+```
 
+> Add a color to the legend background and put a box around the legend
 
+```{r, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90"),
+        text = element_text(color = "grey30"),
+        axis.ticks.x = element_line(color = "grey30"),
+        axis.ticks.y = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "red", color = "black"))
+```
+
+> Set the aspect ratio of the panel to be twice as wide as it is tall
+
+```{r, out.width='50%', fig.align="center"}
+g +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90"),
+        text = element_text(color = "grey30"),
+        axis.ticks.x = element_line(color = "grey30"),
+        axis.ticks.y = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(fill = "red", color = "black"),
+        aspect.ratio = .5)
+```

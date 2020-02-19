@@ -1,7 +1,6 @@
 ---
 title: Plotting III - Themes
 weight: 6
-draft: true
 ---
 
 
@@ -37,11 +36,11 @@ library(lubridate)</code></pre>
 <pre class="r"><code>ggplot(df) +
   geom_line(aes(dttm, temp))</code></pre>
 <p><img src="/post/plotting3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>This is much more data than in the previous classes - one of the things that immediately stands-out are the periods with straight lines in early April and late April. The data did not do this between these points, they are the periods that the ship was in port. The way the data was collected, there are no gaps between when they arrived and when they redeparted. Options we have here are either to plot the data with points.</p>
+<p>This is much more data than in the previous classes - one of the things that immediately stands-out are the periods with straight lines in early April and late April. The data did not do this between these points, they are the periods that the ship was in port. The way the data was collected, there are no gaps between when they arrived and when they departed. Options we have here are either to plot the data with points.</p>
 <pre class="r"><code>ggplot(df) +
   geom_point(aes(dttm, temp))</code></pre>
 <p><img src="/post/plotting3_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>But this can look a little overswhelming. We can instead edit the data a little to add in some blank data in our port stops.</p>
+<p>But this can look a little overwhelming. We can instead edit the data a little to add in some blank data in our port stops.</p>
 <pre class="r"><code># All this does is add in two new rows to the data in early and late April. The way add_row works, this adds in NA for all fields not specified.
 df &lt;- add_row(df, dttm = c(ymd_h(&quot;2015-4-1 0&quot;,&quot;2015-4-26 0&quot;)))
 ggplot(df) +
@@ -52,7 +51,7 @@ ggplot(df) +
 </div>
 <div id="themes" class="section level2">
 <h2>Themes</h2>
-<p>Our next goal is to modify the other elemetns of the plot: the background, the axis lines, the labels, anything that is not actually representing data.</p>
+<p>Our next goal is to modify the other elements of the plot: the background, the axis lines, the labels, anything that is not actually representing data.</p>
 <p>We will start by doing some things we are already familiar with to create a base plot for aesthetic modification.</p>
 <pre class="r"><code>g &lt;- ggplot(df) +
   geom_line(aes(dttm, temp)) +
@@ -69,10 +68,10 @@ g</code></pre>
 <p>You can also get a bunch more themes from the ggthemes packages which you can install using `install.packages(“ggthemes”).</p>
 <pre class="r"><code>library(ggthemes)
 g + theme_economist()</code></pre>
-<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>g + theme_excel()</code></pre>
-<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
-<p>For complete control though, you should familirize yourself with the <code>theme()</code> function. This is the control center for how you plot looks. You can change just about any aspect of the plot from here. Check out <code>?theme()</code> for full details.</p>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-8-2.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>For complete control though, you should familiarize yourself with the <code>theme()</code> function. This is the control center for how you plot looks. You can change just about any aspect of the plot from here. Check out <code>?theme()</code> for full details.</p>
 <p>Using <code>theme()</code> you can edit many aspects of the plot such as:</p>
 <ul>
 <li>the background color</li>
@@ -89,11 +88,61 @@ g + theme_economist()</code></pre>
 <li>line (e.g. axis ticks, axis lines)</li>
 <li>text (e.g fonts)</li>
 </ul>
-<p>For each of these, ggplot provides a function that will create and edit these objects: <code>element_rect()</code>, <code>element_line()</code> and <code>element_text()</code>. There is also an <code>element_blank()</code> to remove an object. If you look through the properties of the plot that you can change (by <code>?theme</code>) you will see whick <code>element_*()</code> you need to specify. Looking at the help file for each element function will show you what parameters you can change.</p>
+<p>For each of these, ggplot provides a function that will create and edit these objects: <code>element_rect()</code>, <code>element_line()</code> and <code>element_text()</code>. There is also an <code>element_blank()</code> to remove an object. If you look through the properties of the plot that you can change (by <code>?theme</code>) you will see which <code>element_*()</code> you need to specify. Looking at the help file for each element function will show you what parameters you can change.</p>
 <p>You can start with an edited theme then change from there. For our example, we’re going to start from our original object <code>g</code>. The things I’m going to do next aren’t necessarily good choices, but they will show how the <code>theme()</code> function works.</p>
-<p>First, set the background to white</p>
+<p>As some examples, setting the background to white</p>
 <pre class="r"><code>g +
   theme(panel.background = element_rect(fill = &quot;white&quot;))</code></pre>
-<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-9-1.png" width="50%" /></p>
-<p>I’m going to run through a few examples here starting from</p>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-9-1.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>Setting the grid line colors and sizes background</p>
+<pre class="r"><code>g +
+  theme(panel.background = element_rect(fill = &quot;white&quot;),
+        panel.grid = element_line(size = .5, color = &quot;grey&quot;))</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-10-1.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>You can see that many of the default ggplot themes have thick major grids and thinner minor ones. I think this is clunky so tend to just remove them as a habit using <code>element_blank()</code>. I’m also making them a lighter grey.</p>
+<pre class="r"><code>g +
+  theme(panel.background = element_rect(fill = &quot;white&quot;),
+        panel.grid = element_line(size = .5, color = &quot;grey90&quot;),
+        panel.grid.minor = element_blank())</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-11-1.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>There’s a weird transition now between the grid lines and the ticks. We can modify the ticks to either be grey or remove them entirely.</p>
+<pre class="r"><code>g +
+  theme(panel.background = element_rect(fill = &quot;white&quot;),
+        panel.grid = element_line(size = .5, color = &quot;grey90&quot;),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank())</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-12-1.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>Of course, if I wanted to remove the grid I would need to keep the ticks, but maybe make them the same color as the label text.</p>
+<pre class="r"><code>g +
+  theme(panel.background = element_rect(fill = &quot;white&quot;),
+        panel.grid = element_blank(),
+        text = element_text(color = &quot;grey30&quot;),
+        axis.ticks = element_line(color = &quot;grey30&quot;))</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-13-1.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>Using <code>text =</code> defines this setting for all text on the figure. This is true also for <code>line =</code> and <code>rect =</code> to specify all line and all rectangle elements be the same format.</p>
+<p>On the other end of the scale, you can even be more specific about individual components; perhaps it might be best in out case to add back in light horizontal grid lines.</p>
+<pre class="r"><code>g +
+  theme(panel.background = element_rect(fill = &quot;white&quot;),
+        panel.grid = element_blank(),
+        panel.grid.major.y = element_line(color = &quot;grey90&quot;),
+        text = element_text(color = &quot;grey30&quot;),
+        axis.ticks.x = element_line(color = &quot;grey30&quot;),
+        axis.ticks.y = element_blank())</code></pre>
+<p><img src="/post/plotting3_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>You can get more and more specific with all the elements of you want to change.</p>
+</div>
+<div id="exercises" class="section level2">
+<h2>Exercises</h2>
+<blockquote>
+<p>Change the font size on the plot</p>
+</blockquote>
+<blockquote>
+<p>Color the line by salinity then modify the legend to be along the bottom rather than the side.</p>
+</blockquote>
+<blockquote>
+<p>Add a color to the legend background and put a box around the legend</p>
+</blockquote>
+<blockquote>
+<p>Set the aspect ratio of the panel to be twice as wide as it is tall</p>
+</blockquote>
 </div>
