@@ -93,6 +93,18 @@ install.packages(&amp;quot;devtools&amp;quot;) You can then install the seapacif
     </item>
     
     <item>
+      <title>R Questions (Feb 20)</title>
+      <link>/rtopic/r-questions-feb-20/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/r-questions-feb-20/</guid>
+      <description>Some questions from today that Farley sent along to me. I’ll attempt to answer some of them
+Why does R hate secondary Y-axis? Because I do. And so should everyone else.
+All joking aside, secondary axes are:
+ Clunky and hard to interpret They almost always require color to distinguish the axes which make black and white reproductions hard to interpret They often have weird things going on with grid lines unaligned to ticks on at least one end  Typically, out goal with secondary axes is to show how things co-vary.</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>

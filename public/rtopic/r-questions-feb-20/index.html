@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.55.6" />
+
+
+<title>R Questions (Feb 20) - Visualization in R</title>
+<meta property="og:title" content="R Questions (Feb 20) - Visualization in R">
+
+
+  <link href='/images/Wave-Icon.png' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/Wave-Icon.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://classroom.google.com/">Classroom</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    <h1 class="article-title">R Questions (Feb 20)</h1>
+
+    <div class="article-content">
+      
+
+
+<p>Some questions from today that Farley sent along to me. I’ll attempt to answer some of them</p>
+<div id="why-does-r-hate-secondary-y-axis" class="section level2">
+<h2>Why does R hate secondary Y-axis?</h2>
+<p>Because I do. And so should everyone else.</p>
+<p>All joking aside, secondary axes are:</p>
+<ul>
+<li>Clunky and hard to interpret</li>
+<li>They almost always require color to distinguish the axes which make black and white reproductions hard to interpret</li>
+<li>They often have weird things going on with grid lines unaligned to ticks on at least one end</li>
+</ul>
+<p>Typically, out goal with secondary axes is to show how things co-vary. This can be achieved in a scatter plot, but if you want to show the time series then a better option is multiple panels. ggplot doesn’t make this super easy, but here is an example to help you see how you could do this. The key is to use the <code>gather()</code> function from the tidyverse which can take multiple columns of data and gathers them together to be in two columns, one with the value of the data and the other to be the column heading. For example:</p>
+<pre class="r"><code># Load tidyverse
+library(tidyverse)
+# Read in the data
+df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv&quot;)
+# gather the data
+df2 &lt;- gather(df, key = &quot;type&quot;, value = &quot;value&quot;, temp, sal)</code></pre>
+<p>Looking at this data, you can see that temp and sal are now values in a column and their associated values are in another column.</p>
+<pre class="r"><code>df2</code></pre>
+<pre><code>## # A tibble: 1,324 x 8
+##    dttm                      lon   lat fluor wind_sp wind_dir type  value
+##    &lt;dttm&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1 2015-03-26 03:00:06.000  173. -43.6  6.28    6.9      210. temp   17.1
+##  2 2015-03-26 04:00:07.000  173. -43.6  4.04    4.46     144. temp   17.5
+##  3 2015-03-26 05:00:08.000  173. -43.6  5.01   13.4      187. temp   16.9
+##  4 2015-03-26 06:00:08.000  173. -43.6  5.72   20.7      184. temp   16.0
+##  5 2015-03-26 07:00:09.000  173. -43.5  4.56   20.0      192. temp   15.8
+##  6 2015-03-26 08:00:10.000  174. -43.5  2.25   15.5      184. temp   15.3
+##  7 2015-03-26 09:00:11.000  174. -43.5  2.98   14.4      178. temp   15.1
+##  8 2015-03-26 10:00:12.000  174. -43.5  3.05   18.1      188. temp   14.6
+##  9 2015-03-26 11:00:12.000  174. -43.4  3.1    12.3      174. temp   14.4
+## 10 2015-03-26 12:00:13.000  174. -43.4  2.87   12.5      189. temp   14.5
+## # … with 1,314 more rows</code></pre>
+<p>You can include as many columns as you want at the end of <code>gather()</code> to bring in more columns of data. Now we can make our plot.</p>
+<pre class="r"><code>ggplot(df2, aes(dttm, value)) +
+  geom_line() +
+  facet_wrap(~type, ncol = 1, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><code>ncol = 1</code> specifies I want 1 column of facets and `scales = “free_y” says you can scale the y axis freely. A little bit of extra work gets us to a nicely formatted plot.</p>
+<pre class="r"><code># set up labeling parameters
+vars &lt;- c(temp = &quot;Temperature (ºC)&quot;, 
+          sal = &quot;Salinity&quot;) 
+
+ggplot(df2, aes(dttm, value)) +
+  geom_line() +
+  facet_wrap(~type, ncol = 1, scales = &quot;free_y&quot;,
+             strip.position = &quot;left&quot;, 
+             labeller = as_labeller(vars))  +
+  labs(x = NULL, y = NULL) +
+  theme_classic() +
+  theme(panel.grid.major.y = element_line(color = &quot;grey80&quot;, size = .2),
+        strip.background = element_blank(),
+        strip.placement = &quot;outside&quot;,
+        axis.line =  element_line(color = &quot;grey80&quot;,size = .2),
+        axis.ticks = element_line(color = &quot;grey80&quot;,size = .2))</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The only thing from my experience that ggplot cannot do is to set the range for each of the y-axis independently. You have to filter the data to “zoom in” if you needed.</p>
+</div>
+<div id="how-can-we-make-a-custom-legend-for-each-line" class="section level2">
+<h2>How can we make a custom legend for each line?</h2>
+<p>I’m assuming this one is about customizing the legend labels. So, for a plot like this,</p>
+<pre class="r"><code>df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_neuston.csv&quot;)
+ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point() +
+  geom_smooth()</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>your legend is labelled “day” and “night”. You might want it to be “Day” and “Night”. This is about adjusting the color scale so we use <code>scale_color_discrete()</code> to solve. All the <code>scale_*</code> functions allow you to specify custom labels.</p>
+<pre class="r"><code>ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point() +
+  geom_smooth() +
+  scale_color_discrete(labels = c(&quot;Day&quot;,&quot;Night&quot;)) +
+  labs(x = NULL,
+       y = &quot;Fluorescence (V)&quot;,
+       color = NULL)</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Another option for a plot like this is to write the labels as text on the plot instead.</p>
+<pre class="r"><code>library(lubridate)
+
+
+labels &lt;- tibble(dttm = ymd_h(&quot;2015-4-2 0&quot;, &quot;2015-04-09 0&quot;),
+                 fluor = c(2,4.5),
+                 daynight = c(&quot;day&quot;, &quot;night&quot;),
+                 label = c(&quot;Day&quot;, &quot;Night&quot;))
+ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point() +
+  geom_smooth() +
+  geom_text(aes(label = label), data = labels) +
+  labs(x = NULL,
+       y = &quot;Fluorescence (V)&quot;,
+       color = NULL) +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="does-ordering-of-aesthetics-affect-the-outcome" class="section level2">
+<h2>Does ordering of aesthetics affect the outcome?</h2>
+<p>It shouldn’t do as long as you are being explicit about x and y which are really the only special cases. ggplot will always expect x first and then y which is why we are able to remove the <code>x =</code> and <code>y =</code> in our plotting functions.</p>
+<pre class="r"><code>ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point()</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Should be the same as</p>
+<pre class="r"><code>ggplot(df, aes(color = daynight, y = fluor, x = dttm )) +
+  geom_point()</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="how-does-r-identify-continuous-vs-discrete-data" class="section level2">
+<h2>How does R identify continuous vs discrete data?</h2>
+<p>Usually its whether a variable in a column is a character or a number.</p>
+<pre class="r"><code>ggplot(df, aes(as.character(dttm), fluor)) +
+  geom_point()</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>This creates a discrete axis here rather than a continuous one. You can resolve this either by using <code>as.numeric()</code> as I have used <code>as.character()</code> above or by just altering the data frame.</p>
+<pre class="r"><code>df$dttm &lt;- as.numeric(df$dttm)</code></pre>
+</div>
+<div id="labeling-min-and-max-values-with-values" class="section level2">
+<h2>Labeling min and max values with values</h2>
+<p>Good question and a good example for our data to be clear about communicating values along with trends. For example, the CO2 data.</p>
+<pre class="r"><code># find the min and max values
+rangef &lt;- range(df$fluor, na.rm = T)
+# find the index in the table of these two values
+rangei &lt;- c(which(df$fluor == rangef[1]), 
+            which(df$fluor == rangef[2]))
+# create a new data frame with these values in
+labels &lt;- tibble(dttm = df$dttm[rangei],
+                 fluor = rangef)
+
+ggplot(df, aes(dttm, fluor)) +
+  geom_point() +
+  geom_point(data = labels, size = 4, shape = 1) +
+  geom_text(aes(label = fluor), data = labels, nudge_y = -.25)</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>There’s also probably a more elegant way to do this - check out R4DS or google it.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

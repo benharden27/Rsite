@@ -1,0 +1,168 @@
+---
+title: R Questions (Feb 20)
+weight: 7
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE, cache.rebuild = TRUE, message = FALSE, warning = FALSE)
+```
+
+Some questions from today that Farley sent along to me. I'll attempt to answer some of them
+
+## Why does R hate secondary Y-axis? 
+
+Because I do. And so should everyone else.
+
+All joking aside, secondary axes are:
+
+- Clunky and hard to interpret
+- They almost always require color to distinguish the axes which make black and white reproductions hard to interpret
+- They often have weird things going on with grid lines unaligned to ticks on at least one end
+
+Typically, out goal with secondary axes is to show how things co-vary. This can be achieved in a scatter plot, but if you want to show the time series then a better option is multiple panels. ggplot doesn't make this super easy, but here is an example to help you see how you could do this. The key is to use the `gather()` function from the tidyverse which can take multiple columns of data and gathers them together to be in two columns, one with the value of the data and the other to be the column heading. For example:
+
+```{r}
+# Load tidyverse
+library(tidyverse)
+# Read in the data
+df <- read_csv("~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv")
+# gather the data
+df2 <- gather(df, key = "type", value = "value", temp, sal)
+```
+
+Looking at this data, you can see that temp and sal are now values in a column and their associated values are in another column.
+
+```{r}
+df2
+```
+
+You can include as many columns as you want at the end of `gather()` to bring in more columns of data. Now we can make our plot.
+
+```{r}
+ggplot(df2, aes(dttm, value)) +
+  geom_line() +
+  facet_wrap(~type, ncol = 1, scales = "free_y")
+```
+
+`ncol = 1` specifies I want 1 column of facets and `scales = "free_y" says you can scale the y axis freely. A little bit of extra work gets us to a nicely formatted plot.
+
+```{r}
+# set up labeling parameters
+vars <- c(temp = "Temperature (ºC)", 
+          sal = "Salinity") 
+
+ggplot(df2, aes(dttm, value)) +
+  geom_line() +
+  facet_wrap(~type, ncol = 1, scales = "free_y",
+             strip.position = "left", 
+             labeller = as_labeller(vars))  +
+  labs(x = NULL, y = NULL) +
+  theme_classic() +
+  theme(panel.grid.major.y = element_line(color = "grey80", size = .2),
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        axis.line =  element_line(color = "grey80",size = .2),
+        axis.ticks = element_line(color = "grey80",size = .2))
+```
+
+The only thing from my experience that ggplot cannot do is to set the range for each of the y-axis independently. You have to filter the data to "zoom in" if you needed.
+
+## How can we make a custom legend for each line?
+
+I'm assuming this one is about customizing the legend labels. So, for a plot like this,
+
+```{r}
+df <- read_csv("~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_neuston.csv")
+ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point() +
+  geom_smooth()
+```
+
+your legend is labelled "day" and "night". You might want it to be "Day" and "Night". This is about adjusting the color scale so we use `scale_color_discrete()` to solve. All the `scale_*` functions allow you to specify custom labels. 
+
+```{r}
+ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point() +
+  geom_smooth() +
+  scale_color_discrete(labels = c("Day","Night")) +
+  labs(x = NULL,
+       y = "Fluorescence (V)",
+       color = NULL)
+```
+
+Another option for a plot like this is to write the labels as text on the plot instead.
+
+```{r}
+
+library(lubridate)
+
+
+labels <- tibble(dttm = ymd_h("2015-4-2 0", "2015-04-09 0"),
+                 fluor = c(2,4.5),
+                 daynight = c("day", "night"),
+                 label = c("Day", "Night"))
+ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point() +
+  geom_smooth() +
+  geom_text(aes(label = label), data = labels) +
+  labs(x = NULL,
+       y = "Fluorescence (V)",
+       color = NULL) +
+  theme(legend.position = "none")
+```
+
+## Does ordering of aesthetics affect the outcome?
+
+It shouldn't do as long as you are being explicit about x and y which are really the only special cases. ggplot will always expect x first and then y which is why we are able to remove the `x = ` and `y =` in our plotting functions.
+
+```{r}
+ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point()
+```
+
+Should be the same as
+
+```{r}
+ggplot(df, aes(color = daynight, y = fluor, x = dttm )) +
+  geom_point()
+```
+
+## How does R identify continuous vs discrete data?
+
+Usually its whether a variable in a column is a character or a number.
+
+```{r}
+ggplot(df, aes(as.character(dttm), fluor)) +
+  geom_point()
+```
+
+This creates a discrete axis here rather than a continuous one. You can resolve this either by using `as.numeric()` as I have used `as.character()` above or by just altering the data frame.
+
+```{r}
+df$dttm <- as.numeric(df$dttm)
+```
+
+## Labeling min and max values with values
+
+Good question and a good example for our data to be clear about communicating values along with trends. For example, the CO2 data.
+
+```{r}
+# find the min and max values
+rangef <- range(df$fluor, na.rm = T)
+# find the index in the table of these two values
+rangei <- c(which(df$fluor == rangef[1]), 
+            which(df$fluor == rangef[2]))
+# create a new data frame with these values in
+labels <- tibble(dttm = df$dttm[rangei],
+                 fluor = rangef)
+
+ggplot(df, aes(dttm, fluor)) +
+  geom_point() +
+  geom_point(data = labels, size = 4, shape = 1) +
+  geom_text(aes(label = fluor), data = labels, nudge_y = -.25)
+```
+
+There's also probably a more elegant way to do this - check out R4DS or google it.
+
+
+
