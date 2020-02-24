@@ -197,6 +197,16 @@ ggplot(df, aes(dttm, fluor)) +
 <p><img src="/post/r_questions_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>There’s also probably a more elegant way to do this - check out R4DS or google it.</p>
 </div>
+<div id="how-do-i-save-my-figure" class="section level2">
+<h2>How do I save my figure?</h2>
+<p><code>ggplot</code> has a built-in save tool called <code>ggsave()</code> which is very useful. It outputs by default the most recent plot you produced although you can also feed it a ggplot object to plot too - see <code>?ggsave</code> for details. You can specify the file type just by the extension you give your filename, but remember to give it a full path to your file so it doesn’t just get generated in you base folder.</p>
+<p>Importantly, you can also specify the width and height of your output in inches and also the resolution in dpi (dots per inch) which defaults to 300 (a pretty good resolution for most applications). I’d typically go for ~1.5 times wider than it is tall - 7 x 5 might be a good aspect ratio for a full width figure.</p>
+<pre class="r"><code>ggplot(df, aes(dttm, fluor, color = daynight)) +
+  geom_point()</code></pre>
+<p><img src="/post/r_questions_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(&quot;~/Documents/SEA/S291_OC/dcv/classes/test_plot.png&quot;, width = 7, height = 5)</code></pre>
+<p>Note that as you change the width and height of the plot, if that figure were put on to a sheet of paper with the dimensions specified in <code>ggsave</code>, the font size would stay the same. e.g. setting a width of 3 and a height of 2 would make the lines and fonts look bigger if you open the plot, but really you are just more zoomed in on a smaller figure.</p>
+</div>
 
     </div>
   </article>

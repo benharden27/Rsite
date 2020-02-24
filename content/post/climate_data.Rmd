@@ -21,6 +21,7 @@ for (file in files) {
   system(paste("cp",input_file,export_file))
 }
 
+
 # copy formatted files
 input_dir <- file.path(system.file(package = "climatedata"),"extdata","csv")
 files <- list.files(input_dir)
