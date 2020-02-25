@@ -6,7 +6,7 @@
     <description>Recent content on Visualization in R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 23 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -102,6 +102,15 @@ install.packages(&amp;quot;devtools&amp;quot;) You can then install the seapacif
 Why does R hate secondary Y-axis? Because I do. And so should everyone else.
 All joking aside, secondary axes are:
  Clunky and hard to interpret They almost always require color to distinguish the axes which make black and white reproductions hard to interpret They often have weird things going on with grid lines unaligned to ticks on at least one end  Typically, out goal with secondary axes is to show how things co-vary.</description>
+    </item>
+    
+    <item>
+      <title>Leaflet and Shiny</title>
+      <link>/rtopic/leaflet-and-shiny/</link>
+      <pubDate>Sun, 23 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/leaflet-and-shiny/</guid>
+      <description>Objectives There are a lot of ways to visualise data, with more and more different options being added every day. It can be hard to tell when getting started which of these options are worth us investing our time in, and which are just passing gimmicks. Some of the important ways we measure the use of a tool is the clarity with which it allows us to communicate, the interactiveness that it offers users, or by simply standing the test of time.</description>
     </item>
     
     <item>

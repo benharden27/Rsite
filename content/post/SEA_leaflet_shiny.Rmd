@@ -1,0 +1,237 @@
+---
+title: "Leaflet and Shiny"
+author: "Robert Schlegel"
+date: "2020-02-23"
+output: html_document
+runtime: shiny
+weight: 8
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objectives
+
+There are _a lot_ of ways to visualise data, with more and more different options being added every day. It can be hard to tell when getting started which of these options are worth us investing our time in, and which are just passing gimmicks. Some of the important ways we measure the use of a tool is the clarity with which it allows us to communicate, the interactiveness that it offers users, or by simply standing the test of time. As all of you have hopefully already seen for yourselves, R offers us two of these three things. Through __`ggplot2`__ we are able to create clear and concise graphics to communicate with, and the R language is about to have it's 20th birthday, so it is safe to say it is here to stay. But what about interactiveness in R? Over the last few years the R community has been rapidly expanding on this and now it is safe to say that R is also a very interactive language.
+
+During this workshop we are first going to learn how to plot some of the SEA data from a previous cruise on an interactive __`leaflet`__ map. Once we are happy with that we will move on to how to create a __`Shiny`__ app that allows us to choose how we visualise the SEA cruise data. We will wrap things up by combining __`leaflet`__ and __`Shiny`__ to give us a map where we can choose how to visualise the data.
+
+Before we get started let's make sure we are all able to load the following libraries. If any of these give us errors we may need to install the packages first. This will likely be the case with __`leaflet`__ and __`Shiny`__ as we haven't encountered these yet.
+
+```{r libraries}
+library(tidyverse)
+library(leaflet)
+library(shiny)
+library(RColorBrewer)
+```
+
+Now we load the data we will use for the rest of this workshop. Note that you will need to change the file pathway to match where this file is on your computer.
+
+```{r load}
+df <- read_csv("~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv")
+```
+
+## Leaflet
+
+There are many great resources [online](https://rstudio.github.io/leaflet/) to read up on to learn more about __`leaflet`__. For the purposes of this workshop it is most important that we know that __`leaflet`__ is not originally an R package. It is it's own library from the JavaScript language. But don't worry, some kind people have figured out how to port __`leaflet`__ into R so that we can get all of the benefits of using JavaScript without having to learn a second language. One of the nice things about __`leaflet`__ is that it works with static HTML documents, like the one we are reading now. This means that we can provide people consuming our visuals with the feel of an interactive app without the need to be hosting the HTML on an active server, like Amazon Web Service (AWS).
+
+Before we go through the basic __`leaflet`__ example below, let's make sure we are all familiar with the pipe operator `%>%`. This weird looking emoji is used to connect lines of code together into one chunk. So instead of needing to write a bunch of functions inside of each other in crazy complicated ways we can instead write out our code almost like we would a paragraph in English for normal humans. The short cut for `%>%` is `ctrl + shift + m`. With a __`ggplot2`__ figure we always start with the `ggplot()` function, and the same goes for __`leaflet`__ always starting with the `leaflet()` function.
+
+```{r base-map}
+leaflet(data = df) %>% 
+  addTiles() %>%
+  addMarkers(~lon, ~lat, label = ~as.character(temp))
+```
+
+What do we think the above three lines of code are doing? Why are the data split like this? It looks like we are going to need to do some data wrangling. Lucky for us the __`leaflet`__ package plays nice with all of the __`tidyverse`__ functions. Below we can see how to pipe (`%>%`) our data wrangling straight into our map. We also can see how we go about changing the map background.
+
+```{r base-map-fix}
+df %>% 
+  mutate(lon = if_else(lon < 0, lon+360, lon)) %>% 
+  leaflet() %>% 
+  addProviderTiles(providers$Esri.OceanBasemap) %>% 
+  addMarkers(~lon, ~lat, label = ~as.character(temp))
+```
+
+What is the mutate function doing? How does the `if_else()` function work? Try reading the help file with `?if_else()`. Note how the above map automagically shrank itself down to show only the area around our points. How can we control that? This help file `?setView` shows us most of the controls we will want. Let's see if we can add one more line of code to the above example to better control how our map looks on startup. Try finding an island you like and have the map open up centred on it and zoomed in.
+
+Now that we've mastered the zooming of our maps, let's have a final look at some of the options available to use for how our markers look before we move on to __`Shiny`__. In the following example we can see how quickly the more powerful aspects of __`leaflet`__ are available to us. 
+
+```{r base-map-labels}
+df %>% 
+  mutate(lon = if_else(lon < 0, lon+360, lon)) %>% 
+  leaflet() %>% 
+  addProviderTiles(providers$Esri.OceanBasemap) %>% 
+  addMarkers(clusterOptions = markerClusterOptions())
+```
+
+What is the code in the above chunk doing, and when would this be useful? What options are available to us to further change our markers?
+
+## Shiny
+
+__`Shiny`__ is an incredibly powerful tool with almost no real limitations. If you can think of something, you can probably create it. To get the full crash course on the basics of Shiny there is a 2.5 hours [video](https://shiny.rstudio.com/tutorial/) from one of the creators, but I assume we'd rather just jump right in. The first thing we need to know about Shiny is that it requires an active server to be running it. This means that __`Shiny`__ apps cannot be hosted on a static HTML page, like the one we are looking at now. There is a solution to this problem built into RStudio that we will discuss at the end of this workshop. For the rest of this workshop however this means that we will need to be copying and pasting the code from this HTML document into an R script to run it. So please go ahead and create a new blank R script and save it as 'app.R' in the same folder where you have been saving the rest of your SEA resources. If however we are working from the RMarkdown file used to create this HTML document we may run the __`Shiny`__ apps directly from that by clicking the green play buttons in the corners of each chunk. This works because our computers are serving the app for us.
+
+The second thing we need to know about __`Shiny`__ before we get started is that it is a different way of thinking about programming to what we may be used to with base R. We'll slowly ease into what this means with examples as we go along. The most apparent difference is that in a __`Shiny`__ script there is a section at the top for the `ui` and a section at the bottom for the `server`. The `ui` is a function we will create that contains all of the bits we want our users to see. The `server` is where the calculations will be happening. Below is a basic app that allows us to control the number of bins on a histogram that shows us the temperature data from the SEA cruise we've been working with. I know it looks daunting, but take some time to work through each line and see if you can make sense of it. Remember that the indentations of the functions and brackets help us to see what belongs to where.
+
+```{r shiny-basic, eval=F}
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("SEA Temperature data"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput(inputId = "bins",
+                        label = "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+
+        # Show the histogram created below in the server
+        mainPanel(
+           plotOutput("histPlot")
+        )
+    )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+    output$histPlot <- renderPlot({
+        # Draw a histogram with the specified number of bins
+        # Bins based on input$bins from the ui above
+        ggplot(data = df, aes(x = temp)) +
+          geom_histogram(bins = input$bins) +
+          labs(x = "Temperature (°C)")
+    })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+Now that we've puzzled through the code to create a histogram, let's kick it up a notch. The next thing we want to create together is a __`Shiny`__ app that allows us to create a scatterplot of the different variables in the SEA data.
+
+```{r shiny-scatter, eval=F}
+# The UI
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("SEA data"),
+
+    # Sidebar
+    sidebarLayout(
+        sidebarPanel(
+          # Choices for x-axis
+            selectInput(inputId = "xaxis",
+                        label = "X-axis:", 
+                        choices = colnames(df),
+                        selected = "temp"),
+            # Choices for y-axis
+            selectInput(inputId = "yaxis",
+                        label = "Y-axis:", 
+                        choices = colnames(df),
+                        selected = "sal")
+            
+        ),
+
+        # Show the scatterplot
+        mainPanel(
+           plotOutput("scatterPlot")
+        )
+    )
+)
+
+# The server
+server <- function(input, output) {
+
+    output$scatterPlot <- renderPlot({
+        ggplot(data = df, aes_string(x = input$xaxis, y = input$yaxis)) +
+          geom_point()
+    })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+How does this differ from the previous __`Shiny`__ app we looked at? How was it we went about adding a second menu option? How could we add a third menu option that changes the colour of the points based on a third variable? To see the full list of widgets available for apps go [here](https://shiny.rstudio.com/gallery/widget-gallery.html), and to see a range of extra widgets that do all sorts of neat things, run the following code in your terminal `shinyWidgets::shinyWidgetsGallery()`. It will require the __`shinyWidgets`__ package to be installed.
+
+## Both
+
+We'll end today's workshop by seeing how we can run a __`leaflet`__ map from a __`Shiny`__ app. Because all of these things are ported into R with the same basic principles it all moves smoothly together. Below is the code chunk necessary to perform our goal. Let's go through it together and see how we can change it to look more like what we may want.
+
+```{r shiny-leaflet, eval=F}
+# First let's fix up the df here so we don't have to do it inside of the app
+df_fix <- df %>% 
+    na.omit() %>% 
+    mutate(lon = if_else(lon < 0, lon+360, lon))
+
+# Next we decide on what we want our colour palette to look like
+# Google RColorBrewer for a list of options
+pal <- colorNumeric(
+  palette = "YlOrRd",
+  domain = df_fix$temp)
+
+# The UI
+ui <- bootstrapPage(
+  
+  # This is a CSS info string, don't worry about this too much for now
+  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+    
+  # This is where the leaflet map is shown in the UI
+  leafletOutput("map", width = "100%", height = "100%"),
+  
+  # This is where we may put our widgets
+  # FOr this app we are only using a slider for now
+  absolutePanel(top = 10, right = 10,
+                sliderInput(inputId = "range", 
+                            label = "Temperature", 
+                            min = floor(min(df_fix$temp)), 
+                            max = ceiling(max(df_fix$temp)),
+                            value = c(floor(min(df_fix$temp)),
+                                      ceiling(max(df_fix$temp))), 
+                            step = 1)
+    )
+)
+
+server <- function(input, output, session) {
+    
+    # Reactive expression for the data subsetted to what the user selects
+    filteredData <- reactive({
+        df_fix %>%
+            filter(temp >= input$range[1],
+                   temp <= input$range[2])
+    })
+    
+    # Only include map parts that won't need to change dynamically
+    output$map <- renderLeaflet({
+        leaflet(df_fix) %>% 
+            addTiles() %>%
+            setView(lng = 200, lat = -30, zoom = 4) %>% 
+            addLegend(position = "bottomright", pal = pal, values = ~temp)
+    })
+    
+    # Changes to the map, such as filtering out temperatures, should be performed in an observer
+    # Each independent set of things that can change should be managed in its own observer
+    observe({
+        leafletProxy("map") %>%
+            clearShapes() %>%
+            addCircles(data = filteredData(),
+                       lng = ~lon, lat = ~lat, radius = 5000,
+                       color = ~pal(temp), fillOpacity = 0.7, 
+                       popup = ~paste0("Temp = ", round(temp, 2), "°C",
+                                       "<br>Time = ", dttm))
+    })
+}
+shinyApp(ui = ui, server = server)
+```
+
+## Conclusion
+
+This has been a very brief introduction into what is possible with __`leaflet`__ and __`Shiny`__. Hopefully this has served to spark some interest into the interactive capabilities of R. There is much more that can be done and for inspiration I would recommend checking [here](https://shiny.rstudio.com/gallery/). When we first started talking about __`Shiny`__ apps I mentioned that it was possible to host them online. To do this, the next time you run your app, look in the top right corner. You'll see a little blue icon that looks sort of like an eye. Click on that and it will walk you through the process. Now go out there and make something awesome!
+
