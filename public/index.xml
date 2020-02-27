@@ -114,6 +114,16 @@ All joking aside, secondary axes are:
     </item>
     
     <item>
+      <title>Previous Pacific Cruise Data</title>
+      <link>/rtopic/previous-pacific-cruise-data/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/previous-pacific-cruise-data/</guid>
+      <description>I’ve compiled all of the previous data from our cruise track into one R package that you can download and access. This page will walk you through that data so you can access and investigate.
+Getting the data To start, you will need to install devtools which are a selection of developer tools that can be used for lots of things. In our case, accessing a package stored on GitHub rather than the standard R package repository (CRAN).</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>

@@ -1,0 +1,110 @@
+---
+title: Previous Pacific Cruise Data
+weight: 9
+---
+
+I've compiled all of the previous data from our cruise track into one R package that you can download and access. This page will walk you through that data so you can access and investigate.
+
+## Getting the data
+
+To start, you will need to install `devtools` which are a selection of developer tools that can be used for lots of things. In our case, accessing a package stored on [GitHub](https://github.com/) rather than the standard R package repository (CRAN).
+
+To install, you just need to run this command once (i.e. in the console, not in a script)
+
+```{r, eval = FALSE}
+install.packages("devtools")
+```
+
+Then you can download my `seapacific` package, again with a single command.
+
+```{r, eval = FALSE}
+devtools::install_github("benharden27/seaprocess")
+```
+
+That will save the data package to your computer. You will be able to use the data by including that library in any script you run.
+
+```{r}
+library(seapacific)
+```
+
+## Data orientation
+
+To use all of the data, we're going to need to make sure we have the tidyverse loaded.
+
+```{r}
+library(tidyverse)
+```
+
+
+There is one data file per cruise:
+
+* S258
+* S265
+* S272
+* S278
+* S285
+
+You can access the data by simply typing the name of the cruise. I'll do it using the `summary` function so you can see what it there.
+
+```{r}
+summary(S265)
+```
+
+Each of these fields is a subset of the total data by type. Many of them are simple data frames:
+
+* elg: minute-by-minute surface data where available (location, time, sal, temp, etc.)
+* hourly: as elg but every hour and typically available for all cruises 
+* surfsamp: surface properties at stations when we took a water sample (includes N, P, chla, etc.)
+* neuston: surface net tow data (zooplankton biomass, plastics, halobates, diversity, etc.)
+* hydro: bottle data from a hydrocast (like surfsamp but for subsurface samples)
+* ctd2: ctd data listed by cruise and station (temp, sal, etc.)
+
+There are a couple of non-dataframe datasets which we can discuss if you need them
+
+* adcp: velocity data from ADCP
+* ctd: individual ctd data files in the `oce` format
+
+Any of them can be accessed using the `$` symbol. For example
+
+```{r}
+S265$neuston
+```
+
+Is the neuston tow data sheet. And again, you can view this like an Excel sheet using
+
+```{r, eval = FALSE}
+View(S265$neuston)
+```
+
+Regrettably, these data are not well documented so you will have to use your best guess or ask me if you want to know what a particular field is. Hopefully they should be moderately self explanatory. Hopefully.
+
+## Combining years
+
+If you want to combine data from different years, here is a starting point. You probably want to give each data set you are using a cruise ID as a column using the mutate function.
+
+```{r}
+S258$hourly <- mutate(S258$hourly, ID = "S258")
+S265$hourly <- mutate(S265$hourly, ID = "S265")
+S272$hourly <- mutate(S272$hourly, ID = "S272")
+S278$hourly <- mutate(S278$hourly, ID = "S278")
+S285$hourly <- mutate(S285$hourly, ID = "S285")
+```
+
+Then you can combine them altogether into one big data set
+
+```{r}
+all_hourly <- bind_rows(S258$hourly, 
+                        S265$hourly,
+                        S272$hourly,
+                        S278$hourly,
+                        S285$hourly)
+```
+
+Then we can plot and use the `ID` field to group or use an an aesthetic
+
+```{r}
+ggplot(all_hourly) +
+  geom_point(aes(lat, temp, color = ID))
+
+```
+
