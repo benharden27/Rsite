@@ -80,7 +80,7 @@ Regrettably, these data are not well documented so you will have to use your bes
 
 ## Combining years
 
-If you want to combine data from different years, here is a starting point. You probably want to give each data set you are using a cruise ID as a column using the mutate function.
+If you want to combine data from different years, here is a starting point. You probably want to give each you are using a cruise ID as a column using the mutate function.
 
 ```{r}
 S258$hourly <- mutate(S258$hourly, ID = "S258")

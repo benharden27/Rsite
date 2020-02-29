@@ -124,6 +124,18 @@ Getting the data To start, you will need to install devtools which are a selecti
     </item>
     
     <item>
+      <title>Plotting IV - Maps</title>
+      <link>/rtopic/plotting-iv-maps/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rtopic/plotting-iv-maps/</guid>
+      <description>The data for this exercise is available here
+Prerequisites This will be a walk through of how to plot data on a map. We’ll be using the hourly location data to plot a cruise track.
+Before we can get going, we need to load our tidyverse library and read in our data like in previous tutorials.
+library(tidyverse) df &amp;lt;- read_csv(&amp;quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv&amp;quot;)  Mapping An initial map of the location data can be acheived by a simple ggplot figure such as the following, where our x and y aesthetics ar lon and lat and we plot each location as a point.</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>

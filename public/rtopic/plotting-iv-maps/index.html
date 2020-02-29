@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.55.6" />
+
+
+<title>Plotting IV - Maps - Visualization in R</title>
+<meta property="og:title" content="Plotting IV - Maps - Visualization in R">
+
+
+  <link href='/images/Wave-Icon.png' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/Wave-Icon.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://classroom.google.com/">Classroom</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    <h1 class="article-title">Plotting IV - Maps</h1>
+
+    <div class="article-content">
+      
+
+
+<p>The data for this exercise is available <a href="../../data_raw/S258_hourly.csv">here</a></p>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>This will be a walk through of how to plot data on a map. We’ll be using the hourly location data to plot a cruise track.</p>
+<p>Before we can get going, we need to load our tidyverse library and read in our data like in previous tutorials.</p>
+<pre class="r"><code>library(tidyverse)
+df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv&quot;)</code></pre>
+</div>
+<div id="mapping" class="section level2">
+<h2>Mapping</h2>
+<p>An initial map of the location data can be acheived by a simple ggplot figure such as the following, where our x and y aesthetics ar lon and lat and we plot each location as a point.</p>
+<pre class="r"><code>ggplot(df, aes(lon,lat)) +
+  geom_point()</code></pre>
+<p><img src="/post/maps_files/figure-html/initial-map-1.png" width="672" /></p>
+<p>That is the raw lon and lat data from the cruise track. The big gap in the data is the effect of the antimeridon where the longitude switches from +179 to -179 as we pass the Chatham Islands east of New Zealand. We can sort that out by using an <code>ifelse()</code> function in the call to ggplot. <code>ifelse()</code> takes in three parameter:</p>
+<ol style="list-style-type: decimal">
+<li>A criteria to return true or false</li>
+<li>What to output if true</li>
+<li>What to output if false</li>
+</ol>
+<p>In our case:</p>
+<ol style="list-style-type: decimal">
+<li>Is the longitude value less than 0</li>
+<li>Output that value + 360</li>
+<li>Output that value</li>
+</ol>
+<pre class="r"><code>ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_point()</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Now you can see that the data is continuous and plotted from 170 to 220 which is not what we really want at the end of the day (there is no 190°E). We will come back to correct this later.</p>
+<p>The next thing we can do is add some land to contextualize the cruise track. We can do this using inbuilt map data in <code>ggplot</code>. The data file we’re going to use is called <code>world2</code> because that is the world map data that spans the antimeridian. This data contains not only the lon and lat data of coastlines, but also groups them together into islands and nations so you can plot these territories. Each island and nation gets a unique <code>group</code> name. The way we can use this in ggplot is by using <code>geom_polygon()</code> with a group aesthetic. This basically creates a polygon for every individual group.</p>
+<pre class="r"><code>ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_point() +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;))</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>So far so good. We can see our cruise track on a map of the world. We probably don’t need to see the whole world though, but we can solve that whilst also solving another issue - that of aspect ratio. Right now if you resize your figure window, the map will narrow or heighten and create a world with a very odd perspective not see in any textbooks. That’s because when we make a map, we want to make sure that the spatial coordinates of the map match our reality of moving around in that space. i.e. moving some amount in the y-direction will move us the same on-the-ground distance as moving the same amount along the x-axis. <code>ggplot</code> has a coordinate transform that does a good first pass at this and it also allows us (like other <code>coord_*</code> functions) to specify the range of x and y values shown.</p>
+<pre class="r"><code>ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_point() +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;)) +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15))</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We’ve now set the bounds of the plot but also ensured that no shifting of the plotting window size will influence the aspect ratio of the plot.</p>
+<p>The next thing to clean up are the axis labels and the tick labels. The axis labels can be set to NULL as we’ve done before. To get nice looking x and y tick labels we probably want to add °S or °W. This is pretty simply done for the y axis as the locations are all in the same hemisphere. We simply select where we want our ticks and then add on a °S to the absolute value of the y locations. We can do this using <code>seq()</code> to create a sequence of tick values then use <code>paste0()</code> to add the absolute values in this sequence (given they are all negative) to the °S symbol.</p>
+<pre class="r"><code># sequence from -50 to -20 in incriments of 10
+ybreaks &lt;- seq(-50,-20,10)
+# combine each of the the absolute values with the °S symbol
+ylabels &lt;- paste0(abs(ybreaks), &quot;°S&quot;)
+
+ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_point() +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;)) +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15)) +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = ybreaks, labels = ylabels)</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The x axis is a little more tricky as we are dealing with the antimeridian, but we can again use <code>seq()</code> to create our breaks and then use <code>ifelse()</code> this time to both decide what exact number to output and which of °W or °E to select.</p>
+<pre class="r"><code># sequence from -50 to -20 in incriments of 10
+ybreaks &lt;- seq(-50,-20,10)
+# combine each of the the absolute values with the °S symbol
+ylabels &lt;- paste0(abs(ybreaks), &quot;°S&quot;)
+
+# sequence from 170 to 220 in incriments of 10
+xbreaks &lt;- seq(170,220,10)
+# select which label to use based on which side of the antimeridian we fall
+xlabels &lt;- paste0(ifelse(xbreaks&gt;180, 360 - xbreaks, xbreaks), 
+                  ifelse(xbreaks&gt;180, &quot;°W&quot;,&quot;°E&quot;))
+
+ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_point() +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;)) +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15)) +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = ybreaks, labels = ylabels) +
+  scale_x_continuous(breaks = xbreaks, labels = xlabels)</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The last thing to do is potentially change the geom to <code>geom_path()</code> rather than <code>geom_point()</code> and change some of the aesthetics and theme of the plot to bring the data to the fore.</p>
+<pre class="r"><code>ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_path() +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15)) +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = ybreaks, labels = ylabels) +
+  scale_x_continuous(breaks = xbreaks, labels = xlabels) +
+  theme_void() +
+  theme(panel.grid.major = element_line(color = &quot;grey90&quot;),
+        axis.text = element_text(color = &quot;grey50&quot;, size = 10))</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Then, as with our previous plotting tools, you can even add extra aesthetics such as coloring the points by temperature.</p>
+<pre class="r"><code>ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_point(aes(color = temp)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15)) +
+  labs(x = NULL, y = NULL, color = &quot;Temperature (°C)&quot;) +
+  scale_y_continuous(breaks = ybreaks, labels = ylabels) +
+  scale_x_continuous(breaks = xbreaks, labels = xlabels) +
+  scale_color_gradientn(colours = oce::oceColorsTemperature(100)) +
+  theme_void() +
+  theme(panel.grid.major = element_line(color = &quot;grey90&quot;),
+        axis.text = element_text(color = &quot;grey50&quot;, size = 10),
+        legend.position = c(0.9,0.2))</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
