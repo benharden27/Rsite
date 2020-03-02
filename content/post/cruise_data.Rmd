@@ -18,7 +18,7 @@ install.packages("devtools")
 Then you can download my `seapacific` package, again with a single command.
 
 ```{r, eval = FALSE}
-devtools::install_github("benharden27/seaprocess")
+devtools::install_github("benharden27/seapacific")
 ```
 
 That will save the data package to your computer. You will be able to use the data by including that library in any script you run.
