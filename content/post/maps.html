@@ -1,7 +1,6 @@
 ---
 title: Plotting IV - Maps
 weight: 10
-draft: true
 ---
 
 
@@ -16,7 +15,7 @@ df &lt;- read_csv(&quot;~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.c
 </div>
 <div id="mapping" class="section level2">
 <h2>Mapping</h2>
-<p>An initial map of the location data can be acheived by a simple ggplot figure such as the following, where our x and y aesthetics ar lon and lat and we plot each location as a point.</p>
+<p>An initial map of the location data can be achieved by a simple ggplot figure such as the following, where our x and y aesthetics are lon and lat and we plot each location as a point.</p>
 <pre class="r"><code>ggplot(df, aes(lon,lat)) +
   geom_point()</code></pre>
 <p><img src="/post/maps_files/figure-html/initial-map-1.png" width="672" /></p>
@@ -107,4 +106,43 @@ ggplot(df, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
         axis.text = element_text(color = &quot;grey50&quot;, size = 10),
         legend.position = c(0.9,0.2))</code></pre>
 <p><img src="/post/maps_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="using-the-seapacific-package" class="section level2">
+<h2>Using the <code>seapacific</code> package</h2>
+<p>Now that you have the basics down, we can go ahead and look at data from the <code>seapacific</code> package that might be more relevant to your project. See <a href="../post/cruise_data.html">the post on that package</a> for more details about how to install and load.</p>
+<p>First we need to load that data library</p>
+<pre class="r"><code>library(seapacific)</code></pre>
+<p>Then we can look at any of the specific datasheets in each cruise. For example, the neuston biodensity data from S272 (accessed through <code>S272$neuston</code>).</p>
+<pre class="r"><code># creating the base map as an object
+g &lt;- ggplot(S272$neuston, aes(ifelse(lon&lt;0, lon+360, lon), lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data(&quot;world2&quot;), fill = &quot;grey50&quot;) +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15)) +
+  labs(x = NULL, y = NULL, size = &quot;Biodensity (ml/m2)&quot;) +
+  scale_y_continuous(breaks = ybreaks, labels = ylabels) +
+  scale_x_continuous(breaks = xbreaks, labels = xlabels) +
+  theme_void() +
+  theme(panel.grid.major = element_line(color = &quot;grey90&quot;),
+        axis.text = element_text(color = &quot;grey50&quot;, size = 10),
+        legend.position = c(0.9,0.2))
+
+# adding the biodensity as sized dots
+g + 
+  geom_point(aes(size = biodens))</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Here I’m using the ability of ggplot to make a base map object, <code>g</code> and then used it to add on the data I’m interested in. This will allow me to quickly make new maps without need to copy and paste all the map formatting code again.</p>
+<p>You can also combine multiple data sets within a year to aid your plot. In this case, adding a cruise track to this figure using <code>S272$hourly</code></p>
+<pre class="r"><code>g +
+  geom_path(color = &quot;gray50&quot;, data  = S272$hourly) +
+  geom_point(aes(size = biodens))</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>You can also check out the section on combining years in the <a href="../post/cruise_data.html">cruise data post</a> as a challenge to plot multiple years.</p>
+</div>
+<div id="creating-a-plan-map" class="section level2">
+<h2>Creating a “plan” map</h2>
+<p>Another thing you might need to do is to create a map that will show your plan for sampling across the South Pacific. This will be useful for both your proposals and posters. Here, I’m just generating some proposed sampling locations in a new tibble (data frame).</p>
+<pre class="r"><code>stations &lt;- tibble(lon = c(176.35, 179.35, -178.05, -175.18, -172.00, -167.78, -163.71, -160.43, -158.01, -156.83, -155.63, -154.49, -153.53, -152.68, -152.16, -151.51, -151.37),
+                   lat = c(-43.78, -43.87, -43.91, -43.48, -43.20, -42.49, -41.58, -40.02, -37.78, -35.41, -32.62, -30.24, -27.84, -25.89, -23.65, -20.96, -18.31)) </code></pre>
+<p>Then I can plot these like I would any other data. I’m using the <code>g</code> object here again, but remember, I loaded that with <code>S272$neuston</code> as the default data for the plot, so I’m going to have to specify <code>stations</code> as a unique data set for the geom. However, I did set up <code>lon</code> and <code>lat</code> as my default x and y aesthetics so I don’t actually need to designate them again here.</p>
+<pre class="r"><code>g + geom_point(data = stations)</code></pre>
+<p><img src="/post/maps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>

@@ -1,7 +1,6 @@
 ---
 title: Plotting IV - Maps
 weight: 10
-draft: true
 ---
 
 The data for this exercise is available [here](../../data_raw/S258_hourly.csv)
@@ -23,7 +22,7 @@ df <- read_csv("~/Documents/SEA/S285_OC/dcv/R/classes/data/S258_hourly.csv")
 
 ## Mapping
 
-An initial map of the location data can be acheived by a simple ggplot figure such as the following, where our x and y aesthetics ar lon and lat and we plot each location as a point.
+An initial map of the location data can be achieved by a simple ggplot figure such as the following, where our x and y aesthetics are lon and lat and we plot each location as a point.
 
 ```{r initial-map}
 ggplot(df, aes(lon,lat)) +
@@ -143,4 +142,69 @@ ggplot(df, aes(ifelse(lon<0, lon+360, lon), lat)) +
         axis.text = element_text(color = "grey50", size = 10),
         legend.position = c(0.9,0.2))
 ```
+
+## Using the `seapacific` package
+
+Now that you have the basics down, we can go ahead and look at data from the `seapacific` package that might be more relevant to your project. See [the post on that package](../post/cruise_data.html) for more details about how to install and load.
+
+First we need to load that data library 
+
+```{r}
+library(seapacific)
+```
+
+Then we can look at any of the specific datasheets in each cruise. For example, the neuston biodensity data from S272 (accessed through `S272$neuston`).
+
+```{r}
+# creating the base map as an object
+g <- ggplot(S272$neuston, aes(ifelse(lon<0, lon+360, lon), lat)) +
+  geom_polygon(aes(long, lat, group = group), data = map_data("world2"), fill = "grey50") +
+  coord_quickmap(xlim = c(165, 220), ylim = c(-50,-15)) +
+  labs(x = NULL, y = NULL, size = "Biodensity (ml/m2)") +
+  scale_y_continuous(breaks = ybreaks, labels = ylabels) +
+  scale_x_continuous(breaks = xbreaks, labels = xlabels) +
+  theme_void() +
+  theme(panel.grid.major = element_line(color = "grey90"),
+        axis.text = element_text(color = "grey50", size = 10),
+        legend.position = c(0.9,0.2))
+
+# adding the biodensity as sized dots
+g + 
+  geom_point(aes(size = biodens))
+```
+
+Here I'm using the ability of ggplot to make a base map object, `g` and then used it to add on the data I'm interested in. This will allow me to quickly make new maps without need to copy and paste all the map formatting code again.
+
+You can also combine multiple data sets within a year to aid your plot. In this case, adding a cruise track to this figure using `S272$hourly`
+
+```{r}
+g +
+  geom_path(color = "gray50", data  = S272$hourly) +
+  geom_point(aes(size = biodens))
+
+```
+
+You can also check out the section on combining years in the [cruise data post](../post/cruise_data.html) as a challenge to plot multiple years.
+
+## Creating a "plan" map
+
+Another thing you might need to do is to create a map that will show your plan for sampling across the South Pacific. This will be useful for both your proposals and posters. Here, I'm just generating some proposed sampling locations in a new tibble (data frame).
+
+```{r}
+stations <- tibble(lon = c(176.35, 179.35, -178.05, -175.18, -172.00, -167.78, -163.71, -160.43, -158.01, -156.83, -155.63, -154.49, -153.53, -152.68, -152.16, -151.51, -151.37),
+                   lat = c(-43.78, -43.87, -43.91, -43.48, -43.20, -42.49, -41.58, -40.02, -37.78, -35.41, -32.62, -30.24, -27.84, -25.89, -23.65, -20.96, -18.31)) 
+```
+
+Then I can plot these like I would any other data. I'm using the `g` object here again, but remember, I loaded that with `S272$neuston` as the default data for the plot, so I'm going to have to specify `stations` as a unique data set for the geom. However, I did set up `lon` and `lat` as my default x and y aesthetics so I don't actually need to designate them again here.
+
+```{r}
+g + geom_point(data = stations)
+```
+
+
+
+
+                   
+ 
+
 
